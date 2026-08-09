@@ -102,7 +102,10 @@
         .form-group label { display: block; font-weight: 600; font-size: 0.88rem; margin-bottom: 6px; }
         .form-control { width: 100%; padding: 12px 16px; border: 1px solid var(--border-color); border-radius: var(--radius-md); font-family: inherit; font-size: 0.95rem; }
 
-        /* PROMINENT COMMENT ACTIONS BUTTON STYLES */
+        /* UPLOAD ZONE DESIGN */
+        .upload-zone { border: 2px dashed #cbd5e1; border-radius: var(--radius-md); padding: 24px 16px; text-align: center; background: #f8fafc; cursor: pointer; transition: all 0.2s ease; }
+        .upload-zone:hover { border-color: var(--primary); background: var(--primary-light); }
+
         .comment-item { background: #f8fafc; border: 1px solid var(--border-color); border-radius: var(--radius-md); padding: 18px 20px; margin-bottom: 16px; }
         .comment-header { display: flex; justify-content: space-between; align-items: center; margin-bottom: 8px; }
         .comment-actions { display: flex; gap: 12px; align-items: center; margin-top: 14px; border-top: 1px solid var(--border-color); padding-top: 12px; }
@@ -212,11 +215,11 @@
         </div>
     </div>
 
-    <!-- CREATE FORUM POST MODAL -->
+    <!-- CREATE FORUM POST MODAL WITH LOCAL FILE UPLOAD -->
     <div class="modal-overlay" id="createPostModal">
-        <div class="modal-card" style="width: 620px;">
+        <div class="modal-card" style="width: 640px;">
             <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 20px;">
-                <h3 style="font-size: 1.3rem; font-weight: 800;">Đăng Bài Tâm Sự / Hỏi Đáp</h3>
+                <h3 style="font-size: 1.3rem; font-weight: 800;"><i class="bi bi-pencil-square" style="color: var(--primary);"></i> Đăng Bài Tâm Sự / Hỏi Đáp</h3>
                 <button onclick="toggleCreatePostModal(false)" style="background: none; border: none; font-size: 1.5rem; cursor: pointer;">&times;</button>
             </div>
             <form onsubmit="submitNewForumPost(event)">
@@ -234,20 +237,41 @@
                 </div>
                 <div class="form-group">
                     <label>Nội dung chi tiết (*)</label>
-                    <textarea id="pContent" rows="5" class="form-control" placeholder="Viết chi tiết câu chuyện..." required></textarea>
+                    <textarea id="pContent" rows="4" class="form-control" placeholder="Viết chi tiết câu chuyện..." required></textarea>
                 </div>
+                
+                <!-- LOCAL FILE UPLOAD ZONE -->
                 <div class="form-group">
-                    <label>URL Hình ảnh minh họa (Tùy chọn)</label>
-                    <input type="url" id="pImgUrl" class="form-control" placeholder="https://images.unsplash.com/..." />
+                    <label>Hình ảnh minh họa (*Tải trực tiếp từ máy tính)</label>
+                    <div class="upload-zone" onclick="document.getElementById('pImgFile').click()">
+                        <i class="bi bi-cloud-arrow-up-fill" style="font-size: 2.2rem; color: var(--primary);"></i>
+                        <div style="font-weight: 700; font-size: 0.95rem; margin-top: 6px; color: var(--text-main);">
+                            Nhấp vào đây để chọn ảnh từ Máy tính / Điện thoại
+                        </div>
+                        <small style="color: var(--text-muted);">Hỗ trợ định dạng PNG, JPG, JPEG, GIF, WebP (Tối đa 10MB)</small>
+                        <input type="file" id="pImgFile" accept="image/*" style="display: none;" onchange="handleImageUpload(event, 'pPreview', 'pPreviewBox')" />
+                    </div>
+                    
+                    <!-- LIVE IMAGE PREVIEW BOX -->
+                    <div id="pPreviewBox" style="display: none; margin-top: 12px; text-align: center; position: relative;">
+                        <img id="pPreview" style="max-height: 220px; border-radius: var(--radius-md); box-shadow: 0 4px 12px rgba(0,0,0,0.15); border: 2px solid var(--primary-light);" />
+                        <div style="margin-top: 6px;">
+                            <button type="button" class="btn btn-secondary" style="padding: 4px 12px; font-size: 0.8rem; color: #ef4444;" onclick="clearUploadedImage('pImgFile', 'pPreview', 'pPreviewBox')">
+                                <i class="bi bi-trash-fill"></i> Xóa ảnh này
+                            </button>
+                        </div>
+                    </div>
                 </div>
-                <div class="form-group" style="display: flex; align-items: center; gap: 10px; background: #f8fafc; padding: 12px; border-radius: var(--radius-md);">
+
+                <div class="form-group" style="display: flex; align-items: center; gap: 10px; background: #f8fafc; padding: 12px; border-radius: var(--radius-md); border: 1px solid var(--border-color);">
                     <input type="checkbox" id="pIsAnon" checked style="width: 18px; height: 18px;" />
                     <label for="pIsAnon" style="margin: 0; cursor: pointer; font-weight: 700; color: var(--primary-hover);">
                         <i class="bi bi-incognito"></i> Đăng bài dạng Học sinh Ẩn danh (Bảo mật 100%)
                     </label>
                 </div>
-                <button type="submit" class="btn btn-primary" style="width: 100%; padding: 12px;">
-                    <i class="bi bi-send-fill"></i> Đăng Bài Viết
+
+                <button type="submit" class="btn btn-primary" style="width: 100%; padding: 12px; font-size: 1rem;">
+                    <i class="bi bi-send-fill"></i> Đăng Bài Viết Ngay
                 </button>
             </form>
         </div>
@@ -261,6 +285,8 @@
     </footer>
 
     <script>
+        let uploadedImageBase64 = null;
+
         const store = {
             forumSort: 'popular', // popular, new, week, month
             commentSort: 'relevant', // relevant, newest, hot
@@ -390,6 +416,31 @@
                 }
             ]
         };
+
+        function handleImageUpload(event, imgPreviewId, previewBoxId) {
+            const file = event.target.files[0];
+            if (file) {
+                const reader = new FileReader();
+                reader.onload = function(e) {
+                    uploadedImageBase64 = e.target.result;
+                    const imgEl = document.getElementById(imgPreviewId);
+                    const boxEl = document.getElementById(previewBoxId);
+                    if (imgEl && boxEl) {
+                        imgEl.src = uploadedImageBase64;
+                        boxEl.style.display = 'block';
+                    }
+                };
+                reader.readAsDataURL(file);
+            }
+        }
+
+        function clearUploadedImage(inputId, imgPreviewId, previewBoxId) {
+            uploadedImageBase64 = null;
+            const inputEl = document.getElementById(inputId);
+            const boxEl = document.getElementById(previewBoxId);
+            if (inputEl) inputEl.value = '';
+            if (boxEl) boxEl.style.display = 'none';
+        }
 
         function getFilteredAndSortedPosts() {
             let list = [...store.posts];
@@ -528,7 +579,7 @@
                             <p style="color: var(--text-muted); font-size: 1.05rem;">Không gian an toàn chia sẻ tâm sự, hỏi đáp kinh nghiệm vượt qua khó khăn & lắng nghe lời khuyên.</p>
                         </div>
                         <button class="btn btn-primary" onclick="toggleCreatePostModal(true)" style="padding: 12px 24px; font-size: 1rem;">
-                            <i class="bi bi-pencil-square"></i> Đăng Bài Tâm Sự (Có Ẩn Danh)
+                            <i class="bi bi-pencil-square"></i> Đăng Bài Tâm Sự (Tải ảnh máy tính)
                         </button>
                     </div>
 
@@ -563,6 +614,19 @@
                                     <select id="rType" class="form-control"><option>Bạo lực thể xác / Đánh đập</option><option>Lăng mạ / Cô lập tâm lý</option><option>Bắt nạt mạng (Cyberbullying)</option><option>Tống tiền / Trấn lột</option></select>
                                 </div>
                                 <div class="form-group"><label>Mô tả chi tiết sự việc (*)</label><textarea id="rDesc" rows="4" class="form-control" placeholder="Mô tả sự việc xảy ra..." required></textarea></div>
+                                
+                                <div class="form-group">
+                                    <label>Tải ảnh bằng chứng từ máy tính (Ảnh tin nhắn, đe dọa, thương tích...)</label>
+                                    <div class="upload-zone" onclick="document.getElementById('rImgFile').click()">
+                                        <i class="bi bi-paperclip" style="font-size: 1.8rem; color: var(--rose);"></i>
+                                        <div style="font-weight: 700; font-size: 0.9rem; margin-top: 4px;">Đính kèm file ảnh bằng chứng</div>
+                                        <input type="file" id="rImgFile" accept="image/*" style="display: none;" onchange="handleImageUpload(event, 'rPreview', 'rPreviewBox')" />
+                                    </div>
+                                    <div id="rPreviewBox" style="display: none; margin-top: 12px; text-align: center;">
+                                        <img id="rPreview" style="max-height: 180px; border-radius: var(--radius-md);" />
+                                    </div>
+                                </div>
+
                                 <button type="submit" class="btn btn-danger" style="width: 100%; padding: 14px; font-size: 1.05rem;"><i class="bi bi-send-check-fill"></i> GỬI ĐƠN BÁO CÁO ẨN DANH NGAY</button>
                             </form>
                         </div>
@@ -847,6 +911,11 @@
         }
 
         function toggleCreatePostModal(show) {
+            if (show) {
+                uploadedImageBase64 = null;
+                const box = document.getElementById('pPreviewBox');
+                if (box) box.style.display = 'none';
+            }
             document.getElementById('createPostModal').classList.toggle('active', show);
         }
 
@@ -855,8 +924,10 @@
             const category = document.getElementById('pCategory').value;
             const title = document.getElementById('pTitle').value;
             const content = document.getElementById('pContent').value;
-            const imgUrl = document.getElementById('pImgUrl').value || 'https://images.unsplash.com/photo-1529156069898-49953e39b3ac?auto=format&fit=crop&w=1200&q=80';
             const isAnon = document.getElementById('pIsAnon').checked;
+
+            // Use uploaded image Base64 or fallback default image
+            const imgUrl = uploadedImageBase64 || 'https://images.unsplash.com/photo-1529156069898-49953e39b3ac?auto=format&fit=crop&w=1200&q=80';
 
             const newPost = {
                 id: Date.now(),
