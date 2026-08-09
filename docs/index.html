@@ -62,6 +62,8 @@
         .badge-anon { background: #f1f5f9; color: #475569; border: 1px solid #cbd5e1; }
         .badge-emergency { background: var(--rose-light); color: var(--rose); }
         .badge-success { background: var(--emerald-light); color: #047857; }
+        .badge-admin { background: #fef3c7; color: #92400e; border: 1px solid #f59e0b; }
+        .badge-staff { background: #e0f2fe; color: #075985; border: 1px solid #0284c7; }
 
         .container { max-width: 1240px; margin: 0 auto; padding: 32px 20px; width: 100%; flex: 1; }
         .hero-section { background: linear-gradient(135deg, #4f46e5 0%, #3730a3 100%); color: #fff; border-radius: 24px; padding: 60px 40px; margin-bottom: 40px; position: relative; overflow: hidden; }
@@ -144,9 +146,8 @@
                 <li><button onclick="showPage('report')" id="nav-report">Báo Cáo Ẩn Danh</button></li>
                 <li><button onclick="showPage('track')" id="nav-track">Tra Cứu Mã</button></li>
             </ul>
-            <div style="display: flex; gap: 10px; align-items: center;">
-                <button class="btn btn-secondary" onclick="toggleAuthModal(true)"><i class="bi bi-box-arrow-in-right"></i> Đăng Nhập</button>
-                <button class="btn btn-danger" onclick="showPage('report')"><i class="bi bi-exclamation-triangle-fill"></i> Gửi Báo Cáo</button>
+            <div style="display: flex; gap: 10px; align-items: center;" id="navAuthArea">
+                <!-- RENDERED DYNAMICALLY (LOGIN BTN OR USER BADGE) -->
             </div>
         </div>
     </header>
@@ -179,13 +180,23 @@
         </div>
     </div>
 
-    <!-- AUTH MODAL -->
+    <!-- AUTH MODAL WITH ROLE SELECTOR -->
     <div class="modal-overlay" id="authModal">
-        <div class="modal-card" style="width: 480px;">
+        <div class="modal-card" style="width: 520px;">
             <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 20px;">
-                <h3 style="font-size: 1.3rem; font-weight: 800;">Đăng Nhập SafeSchool</h3>
+                <h3 style="font-size: 1.3rem; font-weight: 800;"><i class="bi bi-shield-lock-fill" style="color: var(--primary);"></i> Đăng Nhập SafeSchool</h3>
                 <button onclick="toggleAuthModal(false)" style="background: none; border: none; font-size: 1.5rem; cursor: pointer;">&times;</button>
             </div>
+            
+            <div style="background: #f8fafc; padding: 14px; border-radius: 12px; margin-bottom: 20px; border: 1px solid var(--border-color);">
+                <span style="font-size: 0.85rem; font-weight: 700; color: var(--text-muted);">⚡ ĐĂNG NHẬP NHANH THEO VAI TRÒ DEMO:</span>
+                <div style="display: grid; grid-template-columns: repeat(3, 1fr); gap: 8px; margin-top: 10px;">
+                    <button class="btn btn-secondary" style="padding: 8px; font-size: 0.82rem;" onclick="simLogin('User', 'Học sinh Nguyễn Văn A')">👤 Người Dùng</button>
+                    <button class="btn btn-secondary" style="padding: 8px; font-size: 0.82rem; color: #0284c7;" onclick="simLogin('Staff', 'Cán bộ Tâm lý Trần Thu')">🔰 Staff (Cán bộ)</button>
+                    <button class="btn btn-secondary" style="padding: 8px; font-size: 0.82rem; color: #b45309;" onclick="simLogin('Admin', 'Quản trị viên Hệ thống')">👑 Admin</button>
+                </div>
+            </div>
+
             <div class="auth-tabs">
                 <button class="tab-btn active" id="t-phone" onclick="switchTab('phone')">Số điện thoại</button>
                 <button class="tab-btn" id="t-user" onclick="switchTab('user')">Username</button>
@@ -194,16 +205,16 @@
             <div id="c-phone">
                 <div class="form-group"><label>Số điện thoại</label><input type="tel" class="form-control" placeholder="0987654321" /></div>
                 <div class="form-group"><label>Mật khẩu</label><input type="password" class="form-control" placeholder="••••••••" /></div>
-                <button class="btn btn-primary" style="width: 100%; margin-top: 8px;" onclick="simLogin('Số điện thoại')"><i class="bi bi-phone"></i> Đăng nhập SĐT</button>
+                <button class="btn btn-primary" style="width: 100%; margin-top: 8px;" onclick="simLogin('User', 'Học sinh SĐT 0987xxx')"><i class="bi bi-phone"></i> Đăng nhập SĐT (User)</button>
             </div>
             <div id="c-user" style="display: none;">
                 <div class="form-group"><label>Tên đăng nhập</label><input type="text" class="form-control" placeholder="Username" /></div>
                 <div class="form-group"><label>Mật khẩu</label><input type="password" class="form-control" placeholder="••••••••" /></div>
-                <button class="btn btn-primary" style="width: 100%; margin-top: 8px;" onclick="simLogin('Tài khoản')"><i class="bi bi-person"></i> Đăng nhập Username</button>
+                <button class="btn btn-primary" style="width: 100%; margin-top: 8px;" onclick="simLogin('User', 'Tài khoản Học sinh')"><i class="bi bi-person"></i> Đăng nhập Username</button>
             </div>
             <div id="c-gmail" style="display: none; text-align: center;">
                 <p style="color: var(--text-muted); font-size: 0.9rem; margin-bottom: 20px;">Đăng nhập nhanh an toàn bằng tài khoản Google / Gmail cá nhân.</p>
-                <button class="btn btn-secondary" style="width: 100%; padding: 12px;" onclick="simLogin('Google/Gmail')"><i class="bi bi-google"></i> Tiếp tục với Google / Gmail</button>
+                <button class="btn btn-secondary" style="width: 100%; padding: 12px;" onclick="simLogin('User', 'Học sinh Gmail')"><i class="bi bi-google"></i> Tiếp tục với Google / Gmail</button>
             </div>
         </div>
     </div>
@@ -288,6 +299,7 @@
         let uploadedImageBase64 = null;
 
         const store = {
+            currentUser: null, // { name: '...', role: 'User'|'Staff'|'Admin' }
             forumSort: 'popular', // popular, new, week, month
             commentSort: 'relevant', // relevant, newest, hot
             activeReplyCmtId: null,
@@ -416,6 +428,52 @@
                 }
             ]
         };
+
+        // CHECK LOGIN REQUIREMENT (Only User, Staff, Admin allowed)
+        function requireLogin(actionName) {
+            if (!store.currentUser) {
+                alert('⚠️ BẠN CẦN ĐĂNG NHẬP (Tài khoản Người Dùng, Staff hoặc Admin) để ' + actionName + '!');
+                toggleAuthModal(true);
+                return false;
+            }
+            return true;
+        }
+
+        function updateNavbarAuthUI() {
+            const area = document.getElementById('navAuthArea');
+            if (!area) return;
+            if (store.currentUser) {
+                const roleBadgeClass = store.currentUser.role === 'Admin' ? 'badge-admin' : (store.currentUser.role === 'Staff' ? 'badge-staff' : 'badge-success');
+                const roleIcon = store.currentUser.role === 'Admin' ? 'bi-shield-shaded' : (store.currentUser.role === 'Staff' ? 'bi-person-badge-fill' : 'bi-person-circle');
+                
+                area.innerHTML = `
+                    <div style="display: flex; align-items: center; gap: 8px;">
+                        <span class="badge ${roleBadgeClass}" style="padding: 6px 12px; font-size: 0.85rem;">
+                            <i class="bi ${roleIcon}"></i> ${store.currentUser.name} (${store.currentUser.role})
+                        </span>
+                        <button class="btn btn-secondary" style="padding: 6px 12px; font-size: 0.85rem;" onclick="simLogout()"><i class="bi bi-box-arrow-right"></i> Đăng xuất</button>
+                    </div>
+                `;
+            } else {
+                area.innerHTML = `
+                    <button class="btn btn-secondary" onclick="toggleAuthModal(true)"><i class="bi bi-box-arrow-in-right"></i> Đăng Nhập</button>
+                    <button class="btn btn-danger" onclick="showPage('report')"><i class="bi bi-exclamation-triangle-fill"></i> Gửi Báo Cáo</button>
+                `;
+            }
+        }
+
+        function simLogin(role = 'User', name = 'Học sinh SafeSchool') {
+            store.currentUser = { role, name };
+            updateNavbarAuthUI();
+            toggleAuthModal(false);
+            alert('🎉 Đăng nhập thành công với vai trò [' + role.toUpperCase() + ']: ' + name + '!\nBây giờ bạn đã có quyền đăng bài và gửi bình luận.');
+        }
+
+        function simLogout() {
+            store.currentUser = null;
+            updateNavbarAuthUI();
+            alert('Đã đăng xuất khỏi tài khoản!');
+        }
 
         function handleImageUpload(event, imgPreviewId, previewBoxId) {
             const file = event.target.files[0];
@@ -579,7 +637,7 @@
                             <p style="color: var(--text-muted); font-size: 1.05rem;">Không gian an toàn chia sẻ tâm sự, hỏi đáp kinh nghiệm vượt qua khó khăn & lắng nghe lời khuyên.</p>
                         </div>
                         <button class="btn btn-primary" onclick="toggleCreatePostModal(true)" style="padding: 12px 24px; font-size: 1rem;">
-                            <i class="bi bi-pencil-square"></i> Đăng Bài Tâm Sự (Tải ảnh máy tính)
+                            <i class="bi bi-pencil-square"></i> Đăng Bài Tâm Sự (Cần Đăng Nhập)
                         </button>
                     </div>
 
@@ -698,6 +756,9 @@
         }
 
         function toggleReplyForm(cmtId) {
+            // AUTH CHECK FOR COMMENT REPLIES
+            if (!requireLogin('trả lời bình luận')) return;
+
             store.activeReplyCmtId = (store.activeReplyCmtId === cmtId) ? null : cmtId;
             if (store.currentModal) {
                 openDetailModal(store.currentModal.type, store.currentModal.id);
@@ -706,6 +767,8 @@
 
         function submitCommentReply(e, type, itemId, parentCmtId) {
             e.preventDefault();
+            if (!requireLogin('trả lời bình luận')) return;
+
             const textEl = document.getElementById('replyText_' + parentCmtId);
             const isAnonEl = document.getElementById('replyAnon_' + parentCmtId);
             if (!textEl || !textEl.value.trim()) return;
@@ -716,10 +779,11 @@
                 const parent = item.comments.find(c => c.id === parentCmtId);
                 if (parent) {
                     if (!parent.replies) parent.replies = [];
-                    const isAnon = isAnonEl ? isAnonEl.checked : true;
+                    const isAnon = isAnonEl ? isAnonEl.checked : false;
+                    const authorName = isAnon ? 'Học sinh ẩn danh' : `${store.currentUser.name} (${store.currentUser.role})`;
                     parent.replies.push({
                         id: Date.now(),
-                        author: isAnon ? 'Học sinh ẩn danh' : 'Học sinh SafeSchool',
+                        author: authorName,
                         isAnon: isAnon,
                         time: 'Vừa xong',
                         timestamp: Date.now(),
@@ -801,7 +865,7 @@
                                 </div>
                                 <div style="display: flex; justify-content: space-between; align-items: center;">
                                     <label style="font-size: 0.85rem; font-weight: 600; cursor: pointer;">
-                                        <input type="checkbox" id="replyAnon_${c.id}" checked /> Trả lời ẩn danh
+                                        <input type="checkbox" id="replyAnon_${c.id}" /> Trả lời ẩn danh
                                     </label>
                                     <div style="display: flex; gap: 8px;">
                                         <button type="button" class="btn btn-secondary" style="padding: 6px 12px; font-size: 0.85rem;" onclick="toggleReplyForm(${c.id})">Hủy</button>
@@ -862,11 +926,11 @@
                     
                     <form onsubmit="submitNewComment(event, '${type}', ${item.id})" style="margin-bottom: 24px; background: #f8fafc; padding: 20px; border-radius: var(--radius-md); border: 1px solid var(--border-color);">
                         <div class="form-group" style="margin-bottom: 12px;">
-                            <textarea id="cmtInputText" rows="3" class="form-control" placeholder="Viết bình luận động viên hoặc chia sẻ lời khuyên của bạn..." required></textarea>
+                            <textarea id="cmtInputText" rows="3" class="form-control" placeholder="${store.currentUser ? 'Viết bình luận động viên hoặc chia sẻ lời khuyên...' : '🔒 Đăng nhập (User / Staff / Admin) để viết bình luận...'}" required></textarea>
                         </div>
                         <div style="display: flex; justify-content: space-between; align-items: center; flex-wrap: wrap; gap: 12px;">
                             <label style="font-size: 0.9rem; font-weight: 600; cursor: pointer; display: flex; align-items: center; gap: 8px;">
-                                <input type="checkbox" id="cmtIsAnon" checked style="width: 18px; height: 18px;" /> <i class="bi bi-incognito"></i> Bình luận ẩn danh (Bảo mật 100%)
+                                <input type="checkbox" id="cmtIsAnon" style="width: 18px; height: 18px;" /> <i class="bi bi-incognito"></i> Bình luận ẩn danh
                             </label>
                             <button type="submit" class="btn btn-primary" style="padding: 10px 24px;"><i class="bi bi-send-fill"></i> Gửi bình luận</button>
                         </div>
@@ -883,6 +947,8 @@
 
         function submitNewComment(e, type, id) {
             e.preventDefault();
+            if (!requireLogin('bình luận bài viết')) return;
+
             const text = document.getElementById('cmtInputText').value.trim();
             const isAnon = document.getElementById('cmtIsAnon').checked;
             if (!text) return;
@@ -890,9 +956,10 @@
             const list = type === 'news' ? store.news : store.posts;
             const item = list.find(x => x.id === id);
             if (item) {
+                const authorName = isAnon ? 'Bạn đọc ẩn danh' : `${store.currentUser.name} (${store.currentUser.role})`;
                 const newCmt = {
                     id: Date.now(),
-                    author: isAnon ? 'Bạn đọc ẩn danh' : 'Học sinh SafeSchool',
+                    author: authorName,
                     isAnon: isAnon,
                     time: 'Vừa xong',
                     timestamp: Date.now(),
@@ -912,6 +979,9 @@
 
         function toggleCreatePostModal(show) {
             if (show) {
+                // AUTH REQUIREMENT FOR POST CREATION
+                if (!requireLogin('đăng bài tâm sự')) return;
+
                 uploadedImageBase64 = null;
                 const box = document.getElementById('pPreviewBox');
                 if (box) box.style.display = 'none';
@@ -921,6 +991,8 @@
 
         function submitNewForumPost(e) {
             e.preventDefault();
+            if (!requireLogin('đăng bài tâm sự')) return;
+
             const category = document.getElementById('pCategory').value;
             const title = document.getElementById('pTitle').value;
             const content = document.getElementById('pContent').value;
@@ -928,12 +1000,13 @@
 
             // Use uploaded image Base64 or fallback default image
             const imgUrl = uploadedImageBase64 || 'https://images.unsplash.com/photo-1529156069898-49953e39b3ac?auto=format&fit=crop&w=1200&q=80';
+            const authorName = isAnon ? 'Học sinh ẩn danh' : `${store.currentUser.name} (${store.currentUser.role})`;
 
             const newPost = {
                 id: Date.now(),
                 title: title,
                 category: category,
-                author: isAnon ? 'Học sinh ẩn danh' : 'Học sinh SafeSchool',
+                author: authorName,
                 isAnon: isAnon,
                 likes: 1,
                 date: new Date().toISOString(),
@@ -1031,9 +1104,9 @@
                 document.getElementById('t-' + x).classList.toggle('active', x === t);
             });
         }
-        function simLogin(method) { alert('Đăng nhập thành công bằng ' + method + '!'); toggleAuthModal(false); }
 
-        // Initialize Home Page
+        // Initialize Home Page & Navbar
+        updateNavbarAuthUI();
         showPage('home');
     </script>
 </body>
