@@ -104,6 +104,11 @@
 
         .comment-item { background: #f8fafc; border: 1px solid var(--border-color); border-radius: var(--radius-md); padding: 16px 20px; margin-bottom: 14px; }
         .comment-header { display: flex; justify-content: space-between; align-items: center; margin-bottom: 8px; }
+        .comment-actions { display: flex; gap: 14px; align-items: center; margin-top: 10px; }
+        .comment-action-btn { background: none; border: none; font-size: 0.85rem; font-weight: 700; color: var(--text-muted); cursor: pointer; display: flex; align-items: center; gap: 4px; }
+        .comment-action-btn:hover { color: var(--primary); }
+        
+        .reply-item { background: #ffffff; border: 1px solid var(--border-color); border-radius: var(--radius-md); padding: 12px 16px; margin-top: 10px; margin-left: 24px; border-left: 4px solid var(--primary); }
 
         .main-footer { background: var(--dark-bg); color: #94a3b8; padding: 40px 20px 20px; margin-top: auto; font-size: 0.9rem; }
     </style>
@@ -257,7 +262,9 @@
     <script>
         const store = {
             forumSort: 'popular', // popular, new, week, month
-            newsCategory: 'Tất cả',
+            commentSort: 'relevant', // relevant, newest, hot
+            activeReplyCmtId: null,
+            currentModal: null, // { type, id }
             reports: [
                 { trackingCode: 'SS-89A12B', school: 'THPT Nguyễn Trãi', type: 'Bắt nạt mạng & Lăng mạ', desc: 'Có nhóm lập group chế giễu sau giờ học', status: 'Đã tiếp nhận & Đang xác minh', notes: 'Ban Giám Hiệu đã làm việc với GVCN lớp.' }
             ],
@@ -274,8 +281,8 @@
                     summary: 'Hướng dẫn chi tiết các bước thoát hiểm, giữ bình tĩnh, ứng xử thông minh và tìm kiếm trợ giúp ngay lập tức khi bị nhóm bạn đe dọa.',
                     content: `Bắt nạt học đường không chỉ ảnh hưởng đến thể xác mà còn gây tổn thương tâm lý lâu dài. Sau đây là 5 nguyên tắc vàng giúp em tự bảo vệ bản thân:\n\n1. **Giữ khoảng cách an toàn và bình tĩnh:** Không tỏ ra hoảng sợ nhưng cũng không kích động đối phương. Thở sâu và tìm hướng di chuyển thoát ra ngoài.\n2. **Hét to và di chuyển về nơi đông người:** Di chuyển ngay về phía văn phòng giáo viên, phòng bảo vệ, hoặc khu vực căn tin đông đúc.\n3. **Không chịu đựng một mình:** Ngay sau sự việc, hãy ghi lại thời gian, địa điểm, tên những người liên quan và gửi Đơn báo cáo ẩn danh trên SafeSchool.\n4. **Lưu lại bằng chứng:** Chụp màn hình tin nhắn, tài khoản nhắn tin đe dọa trước khi chặn.\n5. **Gọi ngay hotline 111 khi khẩn cấp:** Tổng đài Quốc gia Bảo vệ Trẻ em luôn trực 24/7 sẵn sàng can thiệp.`,
                     comments: [
-                        { author: 'Lê Hoàng Nam', isAnon: false, time: '2 giờ trước', text: 'Bài viết rất hữu ích cho các bạn học sinh cấp 2 và cấp 3!' },
-                        { author: 'Bạn đọc ẩn danh', isAnon: true, time: '4 giờ trước', text: 'Cảm ơn chuyên gia đã chia sẻ kỹ năng tự vệ này.' }
+                        { id: 1, author: 'Lê Hoàng Nam', isAnon: false, time: '2 giờ trước', timestamp: Date.now() - 7200000, likes: 18, text: 'Bài viết rất hữu ích cho các bạn học sinh cấp 2 và cấp 3!', replies: [] },
+                        { id: 2, author: 'Bạn đọc ẩn danh', isAnon: true, time: '4 giờ trước', timestamp: Date.now() - 14400000, likes: 7, text: 'Cảm ơn chuyên gia đã chia sẻ kỹ năng tự vệ này.', replies: [] }
                     ]
                 },
                 {
@@ -290,7 +297,7 @@
                     summary: 'Cách xử lý khi bị lập group antifan, bôi nhọ ảnh cá nhân hoặc nhắn tin đe dọa trên Facebook, TikTok, Zalo.',
                     content: `Bắt nạt trên không gian mạng (Cyberbullying) có thể diễn ra 24/7 khiến học sinh căng thẳng tột độ.\n\n**Các bước hành động ngay lập tức:**\n- **Không đáp trả:** Những kẻ bắt nạt mạng thường muốn thấy sự hoảng loạn của nạn nhân. Sự im lặng và chụp chứng cứ là vũ khí tốt nhất.\n- **Sử dụng công cụ Chặn & Báo cáo (Report):** Chặn tài khoản quấy rối trên nền tảng MXH.\n- **Thông báo với Ban tư vấn nhà trường:** Sử dụng chức năng báo cáo trên website SafeSchool để nhà trường hỗ trợ làm việc với cơ quan an ninh mạng nếu cần thiết.`,
                     comments: [
-                        { author: 'Minh Thùy', isAnon: false, time: '1 ngày trước', text: 'Em từng bị lập group bôi nhọ năm lớp 9, may nhờ thầy cô can thiệp kịp thời.' }
+                        { id: 3, author: 'Minh Thùy', isAnon: false, time: '1 ngày trước', timestamp: Date.now() - 86400000, likes: 14, text: 'Em từng bị lập group bôi nhọ năm lớp 9, may nhờ thầy cô can thiệp kịp thời.', replies: [] }
                     ]
                 },
                 {
@@ -319,8 +326,28 @@
                     image: 'https://images.unsplash.com/photo-1529156069898-49953e39b3ac?auto=format&fit=crop&w=1200&q=80',
                     content: 'Mình bị nhóm bạn trong lớp thêu dệt chuyện sai sự thật rồi rủ cả lớp không ai nói chuyện với mình. Mỗi ngày đến trường với mình là một cơn ác mộng. Có bạn nào từng trải qua cảm giác này và vượt qua được không?',
                     comments: [
-                        { author: 'Nguyễn Minh Tuấn', isAnon: false, time: '3 giờ trước', text: 'Chào bạn! Mình từng ở trong hoàn cảnh tương tự năm lớp 9. Bạn đừng giấu một mình nhé, hãy tâm sự với thầy cô chủ nhiệm hoặc gọi cho Tổng đài 111. Bạn không có lỗi gì cả!' },
-                        { author: 'Chuyên viên Tâm lý Minh Anh', isAnon: false, time: '2 giờ trước', text: 'Chào em. Cô lập xã hội là một dạng bắt nạt tâm lý nghiêm trọng. Em hãy thử tìm kiếm sự kết nối từ các bạn câu lạc bộ khác hoặc tham khảo dịch vụ tư vấn AI / Đơn báo cáo ẩn danh của SafeSchool nhé.' }
+                        {
+                            id: 10,
+                            author: 'Nguyễn Minh Tuấn',
+                            isAnon: false,
+                            time: '3 giờ trước',
+                            timestamp: Date.now() - 10800000,
+                            likes: 24,
+                            text: 'Chào bạn! Mình từng ở trong hoàn cảnh tương tự năm lớp 9. Bạn đừng giấu một mình nhé, hãy tâm sự với thầy cô chủ nhiệm hoặc gọi cho Tổng đài 111. Bạn không có lỗi gì cả!',
+                            replies: [
+                                { id: 1001, author: 'Học sinh ẩn danh (Tác giả)', isAnon: true, time: '2 giờ trước', timestamp: Date.now() - 7200000, likes: 9, text: 'Cảm ơn Tuấn nhiều nhé, lời động viên của bạn giúp mình vững tâm hơn rất nhiều!' }
+                            ]
+                        },
+                        {
+                            id: 11,
+                            author: 'Chuyên viên Tâm lý Minh Anh',
+                            isAnon: false,
+                            time: '2 giờ trước',
+                            timestamp: Date.now() - 7200000,
+                            likes: 31,
+                            text: 'Chào em. Cô lập xã hội là một dạng bắt nạt tâm lý nghiêm trọng. Em hãy thử tìm kiếm sự kết nối từ các bạn câu lạc bộ khác hoặc tham khảo dịch vụ tư vấn AI / Đơn báo cáo ẩn danh của SafeSchool nhé.',
+                            replies: []
+                        }
                     ]
                 },
                 {
@@ -334,7 +361,16 @@
                     image: 'https://images.unsplash.com/photo-1573496359142-b8d87734a5a2?auto=format&fit=crop&w=1200&q=80',
                     content: 'Em muốn hỏi theo Luật Trẻ em 2016 và Bộ luật Hình sự, những học sinh cấp 3 có hành vi bạo lực học đường tống tiền hoặc gây thương tích sẽ bị xử lý như thế nào?',
                     comments: [
-                        { author: 'Luật sư Học đường', isAnon: false, time: '1 ngày trước', text: 'Căn cứ Nghị định 80/2017/NĐ-CP và Luật Trẻ em 2016, người có hành vi bạo lực học đường tùy mức độ có thể bị xử lý kỷ luật buột đình chỉ học, xử phạt hành chính hoặc truy cứu trách nhiệm hình sự nếu từ đủ 14 tuổi trở lên.' }
+                        {
+                            id: 12,
+                            author: 'Luật sư Học đường',
+                            isAnon: false,
+                            time: '1 ngày trước',
+                            timestamp: Date.now() - 86400000,
+                            likes: 19,
+                            text: 'Căn cứ Nghị định 80/2017/NĐ-CP và Luật Trẻ em 2016, người có hành vi bạo lực học đường tùy mức độ có thể bị xử lý kỷ luật buột đình chỉ học, xử phạt hành chính hoặc truy cứu trách nhiệm hình sự nếu từ đủ 14 tuổi trở lên.',
+                            replies: []
+                        }
                     ]
                 },
                 {
@@ -348,7 +384,7 @@
                     image: 'https://images.unsplash.com/photo-1577896851231-70ef18881754?auto=format&fit=crop&w=1200&q=80',
                     content: 'Là cha mẹ, thấy con đi học về lầm lì, bỏ ăn và thương tích nhẹ trên tay nhưng hỏi con không nói. Sau đây là bài chia sẻ kinh nghiệm gia đình tôi đã kiên nhẫn đồng hành cùng con vượt qua.',
                     comments: [
-                        { author: 'Mẹ Bé Bông', isAnon: true, time: '3 ngày trước', text: 'Cảm ơn bài viết rất xúc động và đúng tâm lý phụ huynh!' }
+                        { id: 13, author: 'Mẹ Bé Bông', isAnon: true, time: '3 ngày trước', timestamp: Date.now() - 259200000, likes: 45, text: 'Cảm ơn bài viết rất xúc động và đúng tâm lý phụ huynh!', replies: [] }
                     ]
                 }
             ]
@@ -553,28 +589,82 @@
             showPage('forum');
         }
 
+        function setCommentSort(sortType) {
+            store.commentSort = sortType;
+            if (store.currentModal) {
+                openDetailModal(store.currentModal.type, store.currentModal.id);
+            }
+        }
+
         function likeItem(type, id, btnEl) {
             const list = type === 'news' ? store.news : store.posts;
             const item = list.find(x => x.id === id);
             if (item) {
                 item.likes++;
                 
-                // Update counter inside clicked button if present
-                if (btnEl) {
+                // If clicked inside modal, instantly re-render modal
+                if (store.currentModal && store.currentModal.type === type && store.currentModal.id === id) {
+                    openDetailModal(type, id);
+                } else if (btnEl) {
                     const countSpan = btnEl.querySelector('.like-cnt');
                     if (countSpan) countSpan.textContent = item.likes;
                     btnEl.style.color = '#ef4444';
                     btnEl.style.borderColor = '#ef4444';
                 }
-
-                // Update counter in modal header metadata
-                const modalMeta = document.getElementById('modalMetaLikeCnt');
-                if (modalMeta) modalMeta.textContent = item.likes;
-
-                // Update counter in modal action button
-                const modalBtnCnt = document.getElementById('modalLikeCnt');
-                if (modalBtnCnt) modalBtnCnt.textContent = item.likes;
             }
+        }
+
+        function likeComment(type, itemId, cmtId, isReply = false, parentCmtId = null) {
+            const list = type === 'news' ? store.news : store.posts;
+            const item = list.find(x => x.id === itemId);
+            if (!item) return;
+
+            if (isReply && parentCmtId) {
+                const parent = item.comments.find(c => c.id === parentCmtId);
+                if (parent) {
+                    const r = parent.replies.find(x => x.id === cmtId);
+                    if (r) r.likes++;
+                }
+            } else {
+                const c = item.comments.find(x => x.id === cmtId);
+                if (c) c.likes++;
+            }
+            openDetailModal(type, itemId);
+        }
+
+        function toggleReplyForm(cmtId) {
+            store.activeReplyCmtId = (store.activeReplyCmtId === cmtId) ? null : cmtId;
+            if (store.currentModal) {
+                openDetailModal(store.currentModal.type, store.currentModal.id);
+            }
+        }
+
+        function submitCommentReply(e, type, itemId, parentCmtId) {
+            e.preventDefault();
+            const textEl = document.getElementById('replyText_' + parentCmtId);
+            const isAnonEl = document.getElementById('replyAnon_' + parentCmtId);
+            if (!textEl || !textEl.value.trim()) return;
+
+            const list = type === 'news' ? store.news : store.posts;
+            const item = list.find(x => x.id === itemId);
+            if (item) {
+                const parent = item.comments.find(c => c.id === parentCmtId);
+                if (parent) {
+                    if (!parent.replies) parent.replies = [];
+                    const isAnon = isAnonEl ? isAnonEl.checked : true;
+                    parent.replies.push({
+                        id: Date.now(),
+                        author: isAnon ? 'Học sinh ẩn danh' : 'Học sinh SafeSchool',
+                        isAnon: isAnon,
+                        time: 'Vừa xong',
+                        timestamp: Date.now(),
+                        likes: 1,
+                        text: textEl.value.trim()
+                    });
+                }
+            }
+            store.activeReplyCmtId = null;
+            openDetailModal(type, itemId);
         }
 
         function openDetailModal(type, id) {
@@ -582,16 +672,75 @@
             const item = list.find(x => x.id === id);
             if (!item) return;
 
+            store.currentModal = { type, id };
+
+            // Sort Comments based on store.commentSort
+            let sortedCmts = [...item.comments];
+            if (store.commentSort === 'hot') {
+                sortedCmts.sort((a, b) => (b.likes || 0) - (a.likes || 0));
+            } else if (store.commentSort === 'newest') {
+                sortedCmts.sort((a, b) => (b.timestamp || 0) - (a.timestamp || 0));
+            } else if (store.commentSort === 'relevant') {
+                sortedCmts.sort((a, b) => ((b.likes || 0) + (b.replies ? b.replies.length * 2 : 0)) - ((a.likes || 0) + (a.replies ? a.replies.length * 2 : 0)));
+            }
+
             const modalContent = document.getElementById('detailModalCard');
-            const commentsHtml = item.comments.map(c => `
-                <div class="comment-item">
-                    <div class="comment-header">
-                        <span class="badge ${c.isAnon ? 'badge-anon' : 'badge-success'}">${c.author}</span>
-                        <small style="color: var(--text-muted);">${c.time}</small>
+            const commentsHtml = sortedCmts.map(c => {
+                const repliesHtml = (c.replies || []).map(r => `
+                    <div class="reply-item">
+                        <div class="comment-header">
+                            <span class="badge ${r.isAnon ? 'badge-anon' : 'badge-success'}">${r.author}</span>
+                            <small style="color: var(--text-muted);">${r.time}</small>
+                        </div>
+                        <p style="font-size: 0.95rem; color: var(--text-main); margin-top: 4px;">${r.text}</p>
+                        <div class="comment-actions">
+                            <button class="comment-action-btn" onclick="likeComment('${type}', ${item.id}, ${r.id}, true, ${c.id})">
+                                <i class="bi bi-heart-fill" style="color: #ef4444;"></i> Thích (${r.likes || 0})
+                            </button>
+                        </div>
                     </div>
-                    <p style="font-size: 0.98rem; color: var(--text-main); margin-top: 6px; line-height: 1.5;">${c.text}</p>
-                </div>
-            `).join('');
+                `).join('');
+
+                const showReplyForm = (store.activeReplyCmtId === c.id);
+
+                return `
+                    <div class="comment-item">
+                        <div class="comment-header">
+                            <span class="badge ${c.isAnon ? 'badge-anon' : 'badge-success'}">${c.author}</span>
+                            <small style="color: var(--text-muted);">${c.time}</small>
+                        </div>
+                        <p style="font-size: 1rem; color: var(--text-main); margin-top: 6px; line-height: 1.5;">${c.text}</p>
+                        
+                        <div class="comment-actions">
+                            <button class="comment-action-btn" onclick="likeComment('${type}', ${item.id}, ${c.id})">
+                                <i class="bi bi-heart-fill" style="color: #ef4444;"></i> Thích (${c.likes || 0})
+                            </button>
+                            <button class="comment-action-btn" onclick="toggleReplyForm(${c.id})">
+                                <i class="bi bi-reply-fill" style="color: var(--primary);"></i> Trả lời (${c.replies ? c.replies.length : 0})
+                            </button>
+                        </div>
+
+                        ${showReplyForm ? `
+                            <form onsubmit="submitCommentReply(event, '${type}', ${item.id}, ${c.id})" style="margin-top: 14px; background: #ffffff; padding: 14px; border-radius: var(--radius-md); border: 1px solid var(--primary-light);">
+                                <div class="form-group" style="margin-bottom: 8px;">
+                                    <input type="text" id="replyText_${c.id}" class="form-control" placeholder="Viết câu trả lời cho ${c.author}..." required autoFocus />
+                                </div>
+                                <div style="display: flex; justify-content: space-between; align-items: center;">
+                                    <label style="font-size: 0.85rem; font-weight: 600; cursor: pointer;">
+                                        <input type="checkbox" id="replyAnon_${c.id}" checked /> Trả lời ẩn danh
+                                    </label>
+                                    <div style="display: flex; gap: 8px;">
+                                        <button type="button" class="btn btn-secondary" style="padding: 6px 12px; font-size: 0.85rem;" onclick="toggleReplyForm(${c.id})">Hủy</button>
+                                        <button type="submit" class="btn btn-primary" style="padding: 6px 16px; font-size: 0.85rem;"><i class="bi bi-send-fill"></i> Gửi trả lời</button>
+                                    </div>
+                                </div>
+                            </form>
+                        ` : ''}
+
+                        ${repliesHtml}
+                    </div>
+                `;
+            }).join('');
 
             modalContent.innerHTML = `
                 <div style="display: flex; justify-content: space-between; align-items: flex-start; margin-bottom: 20px;">
@@ -615,15 +764,27 @@
                 </div>
 
                 <div style="display: flex; justify-content: space-between; align-items: center; border-top: 1px solid var(--border-color); padding-top: 20px; margin-bottom: 32px; flex-wrap: wrap; gap: 12px;">
-                    <button class="btn btn-secondary" style="padding: 12px 24px; font-size: 1rem;" onclick="likeItem('${type}', ${item.id}, this)">
+                    <button class="btn btn-secondary" style="padding: 12px 24px; font-size: 1rem; border-color: #ef4444; color: #ef4444;" onclick="likeItem('${type}', ${item.id}, this)">
                         <i class="bi bi-heart-fill" style="color: #ef4444;"></i> Thích bài viết ( <span id="modalLikeCnt" class="like-cnt">${item.likes}</span> )
                     </button>
                     <button class="btn btn-danger" style="padding: 12px 24px; font-size: 1rem;" onclick="showPage('report'); toggleDetailModal(false);"><i class="bi bi-shield-lock-fill"></i> Báo báo khẩn cấp</button>
                 </div>
 
-                <!-- COMMENTS SECTION -->
+                <!-- COMMENTS SECTION WITH SORT TOOLBAR -->
                 <div style="border-top: 2px solid var(--border-color); padding-top: 24px;">
-                    <h3 style="font-size: 1.3rem; font-weight: 800; margin-bottom: 20px; color: var(--text-main);"><i class="bi bi-chat-left-text-fill" style="color: var(--primary);"></i> Thảo Luận & Bình Luận (${item.comments.length})</h3>
+                    <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 20px; flex-wrap: wrap; gap: 12px;">
+                        <h3 style="font-size: 1.3rem; font-weight: 800; color: var(--text-main); margin: 0;">
+                            <i class="bi bi-chat-left-text-fill" style="color: var(--primary);"></i> Thảo Luận & Bình Luận (${item.comments.length})
+                        </h3>
+
+                        <!-- COMMENT SORT TOOLBAR -->
+                        <div class="sort-bar" style="margin: 0; padding: 4px 8px;">
+                            <span style="font-size: 0.8rem; font-weight: 700; color: var(--text-muted);"><i class="bi bi-funnel"></i> Xếp bình luận:</span>
+                            <button class="sort-btn ${store.commentSort === 'relevant' ? 'active' : ''}" onclick="setCommentSort('relevant')">✨ Phù hợp nhất</button>
+                            <button class="sort-btn ${store.commentSort === 'newest' ? 'active' : ''}" onclick="setCommentSort('newest')">⏱️ Mới nhất</button>
+                            <button class="sort-btn ${store.commentSort === 'hot' ? 'active' : ''}" onclick="setCommentSort('hot')">🔥 Hot nhất</button>
+                        </div>
+                    </div>
                     
                     <form onsubmit="submitNewComment(event, '${type}', ${item.id})" style="margin-bottom: 24px; background: #f8fafc; padding: 20px; border-radius: var(--radius-md); border: 1px solid var(--border-color);">
                         <div class="form-group" style="margin-bottom: 12px;">
@@ -656,10 +817,14 @@
             const item = list.find(x => x.id === id);
             if (item) {
                 const newCmt = {
+                    id: Date.now(),
                     author: isAnon ? 'Bạn đọc ẩn danh' : 'Học sinh SafeSchool',
                     isAnon: isAnon,
                     time: 'Vừa xong',
-                    text: text
+                    timestamp: Date.now(),
+                    likes: 1,
+                    text: text,
+                    replies: []
                 };
                 item.comments.unshift(newCmt);
                 openDetailModal(type, id); // Refresh detail modal
@@ -667,6 +832,7 @@
         }
 
         function toggleDetailModal(show) {
+            if (!show) store.currentModal = null;
             document.getElementById('detailModal').classList.toggle('active', show);
         }
 
@@ -768,7 +934,7 @@
             if (lower.includes('đánh') || lower.includes('bạo lực') || lower.includes('đe dọa') || lower.includes('tống tiền')) {
                 reply = "🛡️ **CẢNH BÁO NGUY HIỂM KHẨN CẤP!**\n1. Di chuyển ngay về phía văn phòng thầy cô, phòng bảo vệ.\n2. Gọi ngay hotline **111** (Bảo vệ Trẻ em 24/7) hoặc **113** (Cảnh sát).\n3. Bấm 'Gửi Báo Cáo Ẩn Danh' trên SafeSchool để Ban Giám Hiệu can thiệp xử lý!";
             } else if (lower.includes('cô lập') || lower.includes('buồn') || lower.includes('sợ')) {
-                reply = "🤝 **SafeSchool luôn ở bên em!**\nCảm giác bị cô lập rất đau đross, nhưng em không hề làm gì sai cả. Em có thể viết bài chia sẻ ẩn danh trên Diễn Đàn SafeSchool để nhận lời khuyên!";
+                reply = "🤝 **SafeSchool luôn ở bên em!**\nCảm giác bị cô lập rất đau đớn, nhưng em không hề làm gì sai cả. Em có thể viết bài chia sẻ ẩn danh trên Diễn Đàn SafeSchool để nhận lời khuyên!";
             }
 
             setTimeout(() => {
