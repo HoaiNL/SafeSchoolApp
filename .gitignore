@@ -1,0 +1,12 @@
+# .gitignore for ASP.NET Core & Node projects
+bin/
+obj/
+.vs/
+.vscode/
+node_modules/
+*.user
+*.suo
+*.userosscache
+*.sln.docstates
+.DS_Store
+Thumbs.db

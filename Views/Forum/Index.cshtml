@@ -1,0 +1,136 @@
+@model List<SafeSchoolApp.Models.ForumPost>
+@{
+    ViewData["Title"] = "Diễn Đàn Chia Sẻ & Hỗ Trợ Học Đường - SafeSchool";
+    var categories = new List<string> { "Tất cả", "Tâm sự học đường", "Hỏi đáp pháp lý", "Góc tư vấn phụ huynh" };
+}
+
+<div style="display: flex; justify-content: space-between; align-items: flex-start; margin-bottom: 32px; flex-wrap: wrap; gap: 16px;">
+    <div>
+        <h1 style="font-size: 2.2rem; font-weight: 800; color: var(--text-main); margin-bottom: 8px;">
+            <i class="bi bi-chat-heart-fill" style="color: var(--primary);"></i> Diễn Đàn Tâm Sự Học Đường
+        </h1>
+        <p style="color: var(--text-muted); font-size: 1.05rem;">Không gian an toàn chia sẻ tâm sự, hỏi đáp kinh nghiệm vượt qua khó khăn & lắng nghe lời khuyên.</p>
+    </div>
+
+    <button onclick="document.getElementById('createPostModal').style.display='flex'" class="btn btn-primary" style="padding: 12px 24px; font-size: 1rem;">
+        <i class="bi bi-pencil-square"></i> Đăng Bài Tâm Sự (Có Ẩn Danh)
+    </button>
+</div>
+
+<!-- SEARCH & CATEGORY FILTER BAR -->
+<div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 32px; flex-wrap: wrap; gap: 16px;">
+    <div style="display: flex; gap: 8px; flex-wrap: wrap;">
+        @foreach (var cat in categories)
+        {
+            bool isActive = (ViewBag.CurrentCategory as string) == cat;
+            <a href="/Forum?category=@(cat == "Tất cả" ? "" : Uri.EscapeDataString(cat))" 
+               class="btn @(isActive ? "btn-primary" : "btn-secondary")" style="border-radius: 50px; font-size: 0.88rem;">
+                @cat
+            </a>
+        }
+    </div>
+
+    <form method="get" action="/Forum" style="display: flex; gap: 8px;">
+        <input type="text" name="search" value="@ViewBag.SearchQuery" placeholder="Tìm kiếm bài viết..." class="form-control" style="width: 240px; padding: 8px 14px;" />
+        <button type="submit" class="btn btn-secondary"><i class="bi bi-search"></i></button>
+    </form>
+</div>
+
+<!-- POSTS LIST -->
+<div style="display: flex; flex-direction: column; gap: 20px; margin-bottom: 48px;">
+    @if (!Model.Any())
+    {
+        <div class="card" style="text-align: center; padding: 48px;">
+            <i class="bi bi-chat-left-dots" style="font-size: 3rem; color: var(--text-muted); display: block; margin-bottom: 16px;"></i>
+            <h3>Chưa có bài viết nào thuộc danh mục này</h3>
+            <p style="color: var(--text-muted);">Hãy là người đầu tiên mở lời chia sẻ tâm sự để nhận sự hỗ trợ từ cộng đồng!</p>
+        </div>
+    }
+    else
+    {
+        @foreach (var post in Model)
+        {
+            <div class="card">
+                <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 12px;">
+                    <div style="display: flex; align-items: center; gap: 10px;">
+                        <span class="badge @(post.IsAnonymous ? "badge-anon" : "badge-success")">
+                            <i class="bi @(post.IsAnonymous ? "bi-incognito" : "bi-person-check-fill")"></i> @post.AuthorName
+                        </span>
+                        <span class="badge badge-emergency" style="background: var(--primary-light); color: var(--primary-hover);">
+                            @post.Category
+                        </span>
+                    </div>
+                    <small style="color: var(--text-muted);"><i class="bi bi-clock"></i> @post.CreatedAt.ToString("HH:mm dd/MM/yyyy")</small>
+                </div>
+
+                <h2 style="font-size: 1.3rem; font-weight: 700; margin-bottom: 10px;">
+                    <a href="/Forum/Detail/@post.Id" style="color: var(--text-main);">@post.Title</a>
+                </h2>
+
+                <p style="color: var(--text-muted); line-height: 1.6; margin-bottom: 20px; display: -webkit-box; -webkit-line-clamp: 3; -webkit-box-orient: vertical; overflow: hidden;">
+                    @post.Content
+                </p>
+
+                <div style="display: flex; justify-content: space-between; align-items: center; border-top: 1px solid var(--border-color); padding-top: 14px;">
+                    <div style="display: flex; gap: 16px;">
+                        <button onclick="likePost(@post.Id, this)" class="btn btn-secondary" style="padding: 6px 14px; font-size: 0.88rem;">
+                            <i class="bi bi-heart-fill"></i> <span class="like-count">@post.LikesCount</span> Thích
+                        </button>
+                        <a href="/Forum/Detail/@post.Id" class="btn btn-secondary" style="padding: 6px 14px; font-size: 0.88rem;">
+                            <i class="bi bi-chat-dots-fill"></i> @post.Comments.Count Bình luận
+                        </a>
+                    </div>
+                    <a href="/Forum/Detail/@post.Id" style="font-weight: 700; font-size: 0.9rem;">Đọc thảo luận &rarr;</a>
+                </div>
+            </div>
+        }
+    }
+</div>
+
+<!-- CREATE POST MODAL -->
+<div class="modal-overlay" id="createPostModal" style="display: none;">
+    <div class="modal-card" style="width: 580px;">
+        <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 20px;">
+            <h3 style="font-size: 1.3rem; font-weight: 800;">Tạo Bài Viết Tâm Sự / Hỏi Đáp</h3>
+            <button onclick="document.getElementById('createPostModal').style.display='none'" style="background: none; border: none; font-size: 1.5rem; cursor: pointer;">&times;</button>
+        </div>
+
+        <form method="post" action="/Forum/CreatePost">
+            <div class="form-group">
+                <label>Chủ đề thảo luận</label>
+                <select name="Category" class="form-control" required>
+                    <option value="Tâm sự học đường">Tâm sự học đường</option>
+                    <option value="Hỏi đáp pháp lý">Hỏi đáp pháp lý</option>
+                    <option value="Góc tư vấn phụ huynh">Góc tư vấn phụ huynh</option>
+                </select>
+            </div>
+
+            <div class="form-group">
+                <label>Tiêu đề bài viết</label>
+                <input type="text" name="Title" class="form-control" placeholder="Tóm tắt vấn đề của bạn (Ví dụ: Bị cô lập lớp 10...)" required />
+            </div>
+
+            <div class="form-group">
+                <label>Nội dung chia sẻ</label>
+                <textarea name="Content" rows="5" class="form-control" placeholder="Viết chi tiết câu chuyện hoặc thắc mắc của bạn..." required></textarea>
+            </div>
+
+            <div class="form-group" style="display: flex; align-items: center; gap: 10px; background: #f8fafc; padding: 12px; border-radius: var(--radius-md);">
+                <input type="checkbox" name="IsAnonymous" value="true" id="forumAnonCheck" checked style="width: 18px; height: 18px;" />
+                <input type="hidden" name="IsAnonymous" value="false" />
+                <label for="forumAnonCheck" style="margin: 0; cursor: pointer; font-weight: 700; color: var(--primary-hover);">
+                    <i class="bi bi-incognito"></i> Đăng bài dưới dạng Học sinh Ẩn danh (Bảo mật 100%)
+                </label>
+            </div>
+
+            <div class="form-group">
+                <label>Họ tên hiển thị (Nếu không ẩn danh)</label>
+                <input type="text" name="AuthorName" class="form-control" placeholder="Ví dụ: Nguyễn Văn A" />
+            </div>
+
+            <button type="submit" class="btn btn-primary" style="width: 100%; padding: 12px;">
+                <i class="bi bi-send-fill"></i> Đăng Bài Viết
+            </button>
+        </form>
+    </div>
+</div>

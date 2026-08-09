@@ -1,0 +1,109 @@
+@model List<SafeSchoolApp.Models.NewsArticle>
+@{
+    ViewData["Title"] = "Trang Chủ - Nền tảng Bảo Vệ & Phòng Chống Bắt Nạt Học Đường";
+}
+
+<!-- HERO BANNER -->
+<section class="hero-section">
+    <div class="hero-content">
+        <span class="badge badge-success" style="margin-bottom: 16px; font-size: 0.85rem; padding: 6px 14px;">
+            <i class="bi bi-shield-check"></i> Bảo Mật Danh Tính 100% • Tư Vấn 24/7
+        </span>
+        <h1 class="hero-title">Bạn Không Độc Hành. Hãy Để SafeSchool Lắng Nghe & Bảo Vệ!</h1>
+        <p class="hero-subtitle">
+            Hệ thống hỗ trợ nạn nhân bắt nạt học đường ẩn danh đầu tiên. Kết nối trực tiếp với Tổng đài 111, Cảnh sát 113, Chuyên gia Tâm lý và AI Trợ lý Khẩn cấp.
+        </p>
+        <div class="hero-actions">
+            <a href="/Report" class="btn btn-danger" style="padding: 14px 28px; font-size: 1.05rem;">
+                <i class="bi bi-shield-lock-fill"></i> Báo Cáo Ẩn Danh Ngay
+            </a>
+            <a href="tel:111" class="btn btn-secondary" style="padding: 14px 24px; font-size: 1.05rem; background: rgba(255,255,255,0.15); color: #fff; border-color: rgba(255,255,255,0.3);">
+                <i class="bi bi-telephone-fill"></i> Gọi 111 Khẩn Cấp
+            </a>
+        </div>
+    </div>
+    <i class="bi bi-shield-shaded hero-illustration"></i>
+</section>
+
+<!-- EMERGENCY POLICE & HOTLINE HIGHLIGHT CARD -->
+<section style="margin-bottom: 40px;">
+    <div style="background: linear-gradient(135deg, #fff 0%, #fef2f2 100%); border: 2px solid #fca5a5; border-radius: 20px; padding: 28px; display: flex; align-items: center; justify-content: space-between; flex-wrap: wrap; gap: 20px; box-shadow: var(--shadow-sm);">
+        <div style="display: flex; align-items: center; gap: 20px;">
+            <div style="background: #ef4444; color: #fff; width: 64px; height: 64px; border-radius: 50%; display: flex; align-items: center; justify-content: center; font-size: 2rem;">
+                <i class="bi bi-shield-fill-exclamation"></i>
+            </div>
+            <div>
+                <h3 style="font-size: 1.25rem; font-weight: 800; color: #991b1b; margin-bottom: 4px;">Đang gặp nguy hiểm thể xác hoặc tống tiền?</h3>
+                <p style="color: #7f1d1d; font-size: 0.95rem;">Đừng chần chừ! Gọi trực tiếp cho cơ quan Công an & Tổng đài Khẩn cấp để được giải cứu tức thì.</p>
+            </div>
+        </div>
+        <div style="display: flex; gap: 12px; flex-wrap: wrap;">
+            <a href="tel:111" class="btn btn-danger" style="padding: 12px 20px; font-size: 1rem;">
+                <i class="bi bi-telephone-outbound-fill"></i> Gọi 111 (Quốc Gia)
+            </a>
+            <a href="tel:113" class="btn btn-secondary" style="border-color: #ef4444; color: #dc2626; padding: 12px 20px; font-size: 1rem;">
+                <i class="bi bi-shield-shaded"></i> Gọi 113 (Cảnh Sát)
+            </a>
+        </div>
+    </div>
+</section>
+
+<!-- HOW ANONYMOUS REPORTING WORKS -->
+<section style="margin-bottom: 48px;">
+    <div style="text-align: center; margin-bottom: 32px;">
+        <h2 style="font-size: 1.8rem; font-weight: 800; color: var(--text-main);">Quy Trình Báo Cáo Ẩn Danh 3 Bước</h2>
+        <p style="color: var(--text-muted);">Bảo vệ tuyệt đối danh tính học sinh, tạo điều kiện cho nhà trường & cơ quan chức năng can thiệp kịch khung.</p>
+    </div>
+
+    <div class="grid-3">
+        <div class="card" style="text-align: center;">
+            <div style="width: 56px; height: 56px; background: var(--primary-light); color: var(--primary); border-radius: 50%; display: flex; align-items: center; justify-content: center; font-size: 1.5rem; font-weight: 800; margin: 0 auto 16px;">1</div>
+            <h3 class="card-title">Gửi Đơn Ẩn Danh</h3>
+            <p class="card-summary">Điền thông tin sự việc, tên trường và địa điểm. Không cần đăng nhập, không lưu IP hay thông tin cá nhân.</p>
+        </div>
+
+        <div class="card" style="text-align: center;">
+            <div style="width: 56px; height: 56px; background: #e0f2fe; color: #0284c7; border-radius: 50%; display: flex; align-items: center; justify-content: center; font-size: 1.5rem; font-weight: 800; margin: 0 auto 16px;">2</div>
+            <h3 class="card-title">Nhận Mã Bí Mật</h3>
+            <p class="card-summary">Hệ thống cấp ngay một Mã Tra Cứu bảo mật (Ví dụ: SS-89A12B) để bạn dùng theo dõi tiến độ xử lý.</p>
+        </div>
+
+        <div class="card" style="text-align: center;">
+            <div style="width: 56px; height: 56px; background: var(--emerald-light); color: #059669; border-radius: 50%; display: flex; align-items: center; justify-content: center; font-size: 1.5rem; font-weight: 800; margin: 0 auto 16px;">3</div>
+            <h3 class="card-title">Can Thiệp & Bảo Vệ</h3>
+            <p class="card-summary">Ban tư vấn SafeSchool chuyển hồ sơ xử lý trực tiếp tới Ban giám hiệu, Giáo viên và Cảnh sát địa phương.</p>
+        </div>
+    </div>
+</section>
+
+<!-- LATEST NEWS & SKILLS SECTION -->
+<section style="margin-bottom: 48px;">
+    <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 24px;">
+        <div>
+            <h2 style="font-size: 1.6rem; font-weight: 800; color: var(--text-main);">Tin Tức & Kỹ Năng Phòng Thần</h2>
+            <p style="color: var(--text-muted); font-size: 0.95rem;">Kiến thức tự vệ, giải tỏa tâm lý và tư vấn pháp lý dành cho học sinh & phụ huynh.</p>
+        </div>
+        <a href="/News" class="btn btn-secondary">Xem tất cả bài viết <i class="bi bi-arrow-right"></i></a>
+    </div>
+
+    <div class="grid-3">
+        @foreach (var article in Model)
+        {
+            <div class="card">
+                <span class="badge badge-anon" style="margin-bottom: 12px; background: var(--primary-light); color: var(--primary-hover); border: none;">
+                    @article.Category
+                </span>
+                <h3 class="card-title" style="font-size: 1.1rem; line-height: 1.4;">
+                    <a href="/News/Detail/@article.Id" style="color: var(--text-main);">@article.Title</a>
+                </h3>
+                <p class="card-summary" style="display: -webkit-box; -webkit-line-clamp: 3; -webkit-box-orient: vertical; overflow: hidden;">
+                    @article.Summary
+                </p>
+                <div style="display: flex; justify-content: space-between; align-items: center; font-size: 0.82rem; color: var(--text-muted); border-top: 1px solid var(--border-color); padding-top: 12px;">
+                    <span><i class="bi bi-clock"></i> @article.ReadTime</span>
+                    <a href="/News/Detail/@article.Id" style="font-weight: 700;">Đọc tiếp &rarr;</a>
+                </div>
+            </div>
+        }
+    </div>
+</section>

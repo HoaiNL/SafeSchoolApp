@@ -1,0 +1,152 @@
+@using Microsoft.AspNetCore.Http
+@inject IHttpContextAccessor HttpContextAccessor
+
+<!DOCTYPE html>
+<html lang="vi">
+<head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>@ViewData["Title"] - SafeSchool | Hỗ Trợ & Báo Cáo Bắt Nạt Học Đường Ẩn Danh</title>
+
+    <!-- Google Fonts & Bootstrap Icons -->
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@400;500;600;700;800&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.11.3/font/bootstrap-icons.min.css">
+    
+    <link rel="stylesheet" href="~/css/site.css" />
+</head>
+<body>
+    <!-- STICKY EMERGENCY HOTLINE BAR -->
+    <div class="emergency-top-bar">
+        <div style="display: flex; align-items: center; gap: 8px;">
+            <div class="pulse-dot"></div>
+            <span>TỔNG ĐÀI KHẨN CẤP HOẠT ĐỘNG 24/7 (MIỄN PHÍ CUỘC GỌI)</span>
+        </div>
+        <div class="emergency-hotlines">
+            <a href="tel:111" class="hotline-badge" title="Tổng đài Quốc gia Bảo vệ Trẻ em">
+                <i class="bi bi-shield-fill-check"></i> 111 (Bảo Vệ Trẻ Em)
+            </a>
+            <a href="tel:113" class="hotline-badge" title="Cảnh sát Phản ứng nhanh">
+                <i class="bi bi-telephone-fill"></i> 113 (Cảnh Sát)
+            </a>
+            <a href="tel:115" class="hotline-badge" title="Cấp cứu Y tế">
+                <i class="bi bi-hospital"></i> 115 (Cấp Cứu)
+            </a>
+        </div>
+    </div>
+
+    <!-- MAIN NAVBAR -->
+    <header class="main-header">
+        <div class="navbar-container">
+            <a href="/" class="brand-logo">
+                <i class="bi bi-shield-heart-fill"></i>
+                <span>SafeSchool</span>
+            </a>
+
+            <nav>
+                <ul class="nav-links">
+                    <li><a href="/" class="@(ViewContext.RouteData.Values["controller"]?.ToString() == "Home" ? "active" : "")">Trang Chủ</a></li>
+                    <li><a href="/News" class="@(ViewContext.RouteData.Values["controller"]?.ToString() == "News" ? "active" : "")">Tin Tức & Kỹ Năng</a></li>
+                    <li><a href="/Forum" class="@(ViewContext.RouteData.Values["controller"]?.ToString() == "Forum" ? "active" : "")">Diễn Đàn</a></li>
+                    <li><a href="/Report" class="@(ViewContext.RouteData.Values["controller"]?.ToString() == "Report" && ViewContext.RouteData.Values["action"]?.ToString() == "Index" ? "active" : "")">Báo Cáo Ẩn Danh</a></li>
+                    <li><a href="/Report/Track" class="@(ViewContext.RouteData.Values["action"]?.ToString() == "Track" ? "active" : "")">Tra Cứu Mã</a></li>
+                </ul>
+            </nav>
+
+            <div class="nav-right-actions">
+                @{
+                    var sessionUser = HttpContextAccessor.HttpContext?.Session.GetString("UserName");
+                }
+                @if (!string.IsNullOrEmpty(sessionUser))
+                {
+                    <span style="font-weight: 700; color: var(--primary);"><i class="bi bi-person-circle"></i> @sessionUser</span>
+                    <a href="/Auth/Logout" class="btn btn-secondary" style="padding: 6px 12px; font-size: 0.85rem;">Đăng xuất</a>
+                }
+                else
+                {
+                    <button class="btn btn-secondary" id="openLoginModalBtn">
+                        <i class="bi bi-box-arrow-in-right"></i> Đăng Nhập
+                    </button>
+                }
+                <a href="/Report" class="btn btn-danger">
+                    <i class="bi bi-exclamation-triangle-fill"></i> Gửi Báo Cáo
+                </a>
+            </div>
+        </div>
+    </header>
+
+    <!-- MAIN BODY CONTENT -->
+    <main role="main" class="container">
+        @RenderBody()
+    </main>
+
+    <!-- FLOATING AI SUPPORT CHAT WIDGET -->
+    <div class="ai-chat-fab" id="aiChatFab" title="Mở Trợ lý AI Support Tâm lý & Khẩn cấp 24/7">
+        <i class="bi bi-robot"></i>
+    </div>
+
+    <div class="ai-chat-drawer" id="aiChatDrawer">
+        <div class="chat-header">
+            <div style="display: flex; align-items: center; gap: 10px;">
+                <i class="bi bi-robot" style="font-size: 1.4rem;"></i>
+                <div>
+                    <strong style="display: block; font-size: 1rem;">AI Support SafeSchool</strong>
+                    <small style="opacity: 0.85; font-size: 0.78rem;">Tư vấn tâm lý & Hướng dẫn cấp cứu 24/7</small>
+                </div>
+            </div>
+            <button id="closeAiChat" style="background: none; border: none; color: #fff; font-size: 1.4rem; cursor: pointer;">&times;</button>
+        </div>
+
+        <div class="chat-messages" id="chatMessages">
+            <div class="msg-bubble msg-ai">
+                👋 Chào em! Tôi là **AI Support SafeSchool**.<br />
+                Nếu em đang gặp nguy hiểm, bị đe dọa hoặc bị cô lập ở trường, hãy nhắn cho tôi. Thông tin hoàn toàn ẩn danh và bảo mật! 🛡️
+            </div>
+        </div>
+
+        <div class="chat-input-area">
+            <input type="text" id="aiMsgInput" placeholder="Nhập câu hỏi hoặc tâm sự tại đây..." />
+            <button class="btn btn-primary" id="sendAiMsgBtn" style="border-radius: 50px; padding: 10px 16px;">
+                <i class="bi bi-send-fill"></i>
+            </button>
+        </div>
+    </div>
+
+    <!-- LOGIN MODAL -->
+    @await Html.PartialAsync("_LoginModal")
+
+    <!-- FOOTER -->
+    <footer class="main-footer">
+        <div class="footer-container">
+            <div class="footer-col">
+                <div class="brand-logo" style="color: #fff; margin-bottom: 12px;">
+                    <i class="bi bi-shield-heart-fill" style="color: var(--primary);"></i>
+                    <span>SafeSchool</span>
+                </div>
+                <p style="font-size: 0.9rem; line-height: 1.6;">
+                    Nền tảng hỗ trợ học sinh, phụ huynh và nhà trường phòng chống bạo lực & bắt nạt học đường. Bảo vệ 100% danh tính người báo cáo.
+                </p>
+            </div>
+            <div class="footer-col">
+                <h4>Đường Dây Nóng Khẩn Cấp</h4>
+                <p><strong style="color: #fff;">111:</strong> Tổng đài Quốc gia Bảo vệ Trẻ em (Trực 24/7)</p>
+                <p><strong style="color: #fff;">113:</strong> Cảnh sát Phản ứng nhanh</p>
+                <p><strong style="color: #fff;">115:</strong> Cấp cứu y tế khẩn cấp</p>
+            </div>
+            <div class="footer-col">
+                <h4>Chức Năng Chính</h4>
+                <p><a href="/Report" style="color: #94a3b8;">Báo cáo bắt nạt ẩn danh</a></p>
+                <p><a href="/Forum" style="color: #94a3b8;">Diễn đàn chia sẻ tâm sự</a></p>
+                <p><a href="/News" style="color: #94a3b8;">Kỹ năng ứng phó & Pháp lý</a></p>
+            </div>
+        </div>
+        <div class="footer-bottom">
+            <p>&copy; @DateTime.Now.Year SafeSchool Vietnam - Nền tảng An toàn Học đường Việt Nam. Phát triển bởi Sinh viên Công nghệ C# ASP.NET Core.</p>
+        </div>
+    </footer>
+
+    <script src="~/js/site.js"></script>
+    @await RenderSectionAsync("Scripts", required: false)
+</body>
+</html>

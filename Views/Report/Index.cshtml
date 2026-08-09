@@ -1,0 +1,102 @@
+@model SafeSchoolApp.Models.Report
+@{
+    ViewData["Title"] = "Báo Cáo Bắt Nạt Học Đường Ẩn Danh - SafeSchool";
+}
+
+<div style="max-width: 800px; margin: 0 auto;">
+    <div style="text-align: center; margin-bottom: 32px;">
+        <span class="badge badge-emergency" style="margin-bottom: 12px; padding: 6px 16px; font-size: 0.9rem;">
+            <i class="bi bi-shield-lock-fill"></i> Bảo Mật Danh Tính 100% • Không Thu Thập IP
+        </span>
+        <h1 style="font-size: 2.2rem; font-weight: 800; color: var(--text-main); margin-bottom: 10px;">Gửi Đơn Báo Cáo Bắt Nạt Học Đường</h1>
+        <p style="color: var(--text-muted); font-size: 1rem;">
+            Thông tin của bạn sẽ được chuyển ngay lập tức tới Ban tư vấn tâm lý SafeSchool, Ban giám hiệu nhà trường và cơ quan chức năng để bảo vệ bạn an toàn.
+        </p>
+    </div>
+
+    <div class="card" style="padding: 40px; box-shadow: var(--shadow-lg);">
+        <form method="post" action="/Report/Submit">
+
+            <!-- TOGGLE ANONYMOUS SWITCH -->
+            <div style="background: linear-gradient(135deg, #e0e7ff 0%, #e0f2fe 100%); padding: 20px; border-radius: var(--radius-md); border: 1px solid #c7d2fe; margin-bottom: 28px; display: flex; align-items: center; justify-content: space-between; flex-wrap: wrap; gap: 16px;">
+                <div>
+                    <strong style="color: var(--primary-hover); font-size: 1.1rem; display: block;">
+                        <i class="bi bi-incognito"></i> Chế độ Báo Cáo Ẩn Danh
+                    </strong>
+                    <span style="color: var(--text-muted); font-size: 0.88rem;">Hệ thống sẽ che giấu toàn bộ tên, SĐT và thông tin nhận dạng của bạn.</span>
+                </div>
+
+                <label class="switch" style="position: relative; display: inline-block; width: 60px; height: 32px;">
+                    <input type="checkbox" name="IsAnonymous" value="true" id="isAnonymousCheckbox" checked style="opacity: 0; width: 0; height: 0;" />
+                    <input type="hidden" name="IsAnonymous" value="false" />
+                    <span class="slider" style="position: absolute; cursor: pointer; top: 0; left: 0; right: 0; bottom: 0; background-color: var(--emerald); transition: .4s; border-radius: 34px;"></span>
+                </label>
+            </div>
+
+            <!-- REPORTER CONTACT INFO (IF NOT ANONYMOUS) -->
+            <div id="reporterInfoFields" style="display: none; background: #f8fafc; padding: 20px; border-radius: var(--radius-md); margin-bottom: 24px; border: 1px solid var(--border-color);">
+                <h4 style="font-size: 1rem; font-weight: 700; margin-bottom: 12px; color: var(--text-main);">Thông tin liên hệ (Tùy chọn)</h4>
+                <div class="form-group">
+                    <label>Họ và tên của bạn</label>
+                    <input type="text" asp-for="ReporterName" class="form-control" placeholder="Ví dụ: Nguyễn Văn A" />
+                </div>
+                <div class="form-group">
+                    <label>Số điện thoại liên hệ</label>
+                    <input type="tel" asp-for="ReporterPhone" class="form-control" placeholder="0987654321" />
+                </div>
+            </div>
+
+            <!-- INCIDENT DETAILS -->
+            <h4 style="font-size: 1.1rem; font-weight: 800; margin-bottom: 16px; color: var(--text-main); border-bottom: 2px solid var(--border-color); padding-bottom: 8px;">
+                Chi Tiết Sự Việc Bắt Nạt
+            </h4>
+
+            <div class="form-group">
+                <label>Tên trường học xảy ra sự việc (*)</label>
+                <input type="text" asp-for="SchoolName" class="form-control" placeholder="Ví dụ: THPT Nguyễn Trãi - Hà Nội" required />
+            </div>
+
+            <div style="display: grid; grid-template-columns: repeat(auto-fit, minmax(240px, 1fr)); gap: 16px;">
+                <div class="form-group">
+                    <label>Loại hình bắt nạt (*)</label>
+                    <select asp-for="BullyingType" class="form-control" required>
+                        <option value="Bạo lực thể xác">Bạo lực thể xác / Đánh đập</option>
+                        <option value="Lăng mạ/Tâm lý">Lăng mạ / Cô lập / Quấy rối tâm lý</option>
+                        <option value="Bắt nạt mạng">Bắt nạt trên mạng (Cyberbullying)</option>
+                        <option value="Tống tiền">Tống tiền / Trấn lột đồ đạc</option>
+                        <option value="Khác">Dạng bắt nạt khác</option>
+                    </select>
+                </div>
+
+                <div class="form-group">
+                    <label>Địa điểm cụ thể xảy ra sự việc</label>
+                    <input type="text" asp-for="LocationDetail" class="form-control" placeholder="Căn tin, lớp 10A2, nhà vệ sinh, cổng trường..." />
+                </div>
+            </div>
+
+            <div class="form-group">
+                <label>Mức độ khẩn cấp (*)</label>
+                <select asp-for="SeverityLevel" class="form-control">
+                    <option value="Nhẹ">Nhẹ (Bị trêu ghẹo, nói xấu)</option>
+                    <option value="Khẩn cấp vừa" selected>Khẩn cấp vừa (Bị đe dọa, cô lập nghiêm trọng)</option>
+                    <option value="Rất nguy hiểm/Khẩn cấp">Rất nguy hiểm / Khẩn cấp (Bị đánh đập, trấn lột, nguy hiểm tính mạng)</option>
+                </select>
+            </div>
+
+            <div class="form-group">
+                <label>Mô tả chi tiết sự việc (*)</label>
+                <textarea asp-for="Description" rows="5" class="form-control" placeholder="Hãy mô tả chi tiết: Ai là người thực hiện hành vi? Sự việc xảy ra khi nào? Có ai chứng kiến không?..." required></textarea>
+            </div>
+
+            <div class="form-group">
+                <label>Đính kèm bằng chứng (Hình ảnh/Video/Chụp màn hình tin nhắn)</label>
+                <input type="file" class="form-control" accept="image/*,video/*" />
+                <small style="color: var(--text-muted);">Hình ảnh/tin nhắn sẽ được mã hóa và chỉ dùng cho mục đích xác minh an toàn.</small>
+            </div>
+
+            <button type="submit" class="btn btn-danger" style="width: 100%; padding: 16px; font-size: 1.1rem; margin-top: 12px; border-radius: var(--radius-md);">
+                <i class="bi bi-send-check-fill"></i> GỬI ĐƠN BÁO CÁO ẨN DANH NGAY
+            </button>
+        </form>
+    </div>
+</div>

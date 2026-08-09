@@ -1,0 +1,87 @@
+@model SafeSchoolApp.Models.Report
+@{
+    ViewData["Title"] = "Tra Cứu Báo Cáo Bắt Nạt Ẩn Danh - SafeSchool";
+    var searchCode = ViewBag.SearchCode as string;
+}
+
+<div style="max-width: 800px; margin: 0 auto;">
+    <div style="text-align: center; margin-bottom: 32px;">
+        <h1 style="font-size: 2.2rem; font-weight: 800; color: var(--text-main); margin-bottom: 8px;">
+            <i class="bi bi-shield-check" style="color: var(--primary);"></i> Tra Cứu Tiến Độ Báo Cáo
+        </h1>
+        <p style="color: var(--text-muted); font-size: 1.05rem;">
+            Nhập Mã Tra Cứu bí mật (VD: SS-89A12B) được cấp khi bạn gửi đơn để xem phản hồi & tiến trình can thiệp.
+        </p>
+    </div>
+
+    <!-- SEARCH CODE FORM -->
+    <div class="card" style="padding: 32px; margin-bottom: 40px;">
+        <form method="get" action="/Report/Track" style="display: flex; gap: 12px; flex-wrap: wrap;">
+            <input type="text" name="code" value="@searchCode" placeholder="Nhập Mã Tra Cứu (VD: SS-89A12B)..." class="form-control" style="flex: 1; min-width: 280px; font-size: 1.1rem; padding: 14px;" required />
+            <button type="submit" class="btn btn-primary" style="padding: 14px 28px; font-size: 1rem;">
+                <i class="bi bi-search"></i> Tra Cứu Ngay
+            </button>
+        </form>
+    </div>
+
+    <!-- RESULT DISPLAY -->
+    @if (!string.IsNullOrEmpty(searchCode))
+    {
+        @if (Model == null)
+        {
+            <div class="card" style="text-align: center; padding: 48px; border-top: 4px solid var(--rose);">
+                <i class="bi bi-exclamation-octagon-fill" style="font-size: 3rem; color: var(--rose); margin-bottom: 16px; display: block;"></i>
+                <h3 style="font-size: 1.3rem; font-weight: 800; color: var(--text-main);">Không tìm thấy báo cáo với mã "@searchCode"</h3>
+                <p style="color: var(--text-muted);">Vui lòng kiểm tra kỹ lại Mã bí mật được cấp hoặc liên hệ hotline 111 để được hỗ trợ trực tiếp.</p>
+            </div>
+        }
+        else
+        {
+            <div class="card" style="padding: 36px; border-top: 4px solid var(--emerald);">
+                <div style="display: flex; justify-content: space-between; align-items: center; border-bottom: 1px solid var(--border-color); padding-bottom: 16px; margin-bottom: 24px; flex-wrap: wrap; gap: 12px;">
+                    <div>
+                        <span style="font-size: 0.85rem; color: var(--text-muted); display: block;">MÃ TRA CỨU:</span>
+                        <strong style="font-size: 1.4rem; color: var(--primary-hover);">@Model.TrackingCode</strong>
+                    </div>
+                    <div>
+                        <span style="font-size: 0.85rem; color: var(--text-muted); display: block;">TRẠNG THÁI:</span>
+                        <span class="badge badge-success" style="font-size: 1rem; padding: 6px 16px;">
+                            <i class="bi bi-arrow-repeat"></i> @Model.Status
+                        </span>
+                    </div>
+                </div>
+
+                <div style="display: grid; grid-template-columns: repeat(auto-fit, minmax(220px, 1fr)); gap: 16px; margin-bottom: 24px; background: #f8fafc; padding: 20px; border-radius: var(--radius-md);">
+                    <div>
+                        <small style="color: var(--text-muted);">Trường học:</small>
+                        <p style="font-weight: 700;">@Model.SchoolName</p>
+                    </div>
+                    <div>
+                        <small style="color: var(--text-muted);">Loại hình bắt nạt:</small>
+                        <p style="font-weight: 700;">@Model.BullyingType</p>
+                    </div>
+                    <div>
+                        <small style="color: var(--text-muted);">Ngày tiếp nhận:</small>
+                        <p style="font-weight: 700;">@Model.CreatedAt.ToString("HH:mm dd/MM/yyyy")</p>
+                    </div>
+                </div>
+
+                <div style="margin-bottom: 24px;">
+                    <h4 style="font-size: 1rem; font-weight: 700; margin-bottom: 8px;">Nội dung mô tả sự việc:</h4>
+                    <p style="color: #334155; background: #ffffff; padding: 16px; border-radius: var(--radius-md); border: 1px solid var(--border-color); line-height: 1.6;">
+                        @Model.Description
+                    </p>
+                </div>
+
+                <div style="background: var(--emerald-light); padding: 20px; border-radius: var(--radius-md); border: 1px solid #a7f3d0;">
+                    <h4 style="font-size: 1rem; font-weight: 800; color: #047857; margin-bottom: 8px;">
+                        <i class="bi bi-shield-check"></i> Thông báo từ Ban Giám Hiệu & Chuyên Gia SafeSchool:
+                    </h4>
+                    <p style="color: #065f46; font-size: 0.95rem; line-height: 1.6;">
+                        @Model.AdminNotes
+                    </p>
+                </div>
+            </div>
+        }
+    }
+</div>
