@@ -116,6 +116,16 @@
         
         .reply-item { background: #ffffff; border: 1px solid var(--border-color); border-radius: var(--radius-md); padding: 14px 18px; margin-top: 12px; margin-left: 28px; border-left: 4px solid var(--primary); box-shadow: 0 1px 3px rgba(0,0,0,0.04); }
 
+        .avatar-wrapper { position: relative; width: 105px; height: 105px; display: inline-block; }
+        .avatar-img { width: 105px; height: 105px; border-radius: 50%; object-fit: cover; border: 4px solid var(--primary-light); box-shadow: 0 8px 20px rgba(0,0,0,0.12); }
+        .avatar-edit-btn { position: absolute; bottom: 2px; right: 2px; background: var(--primary); color: #fff; width: 34px; height: 34px; border-radius: 50%; border: 2px solid #fff; display: flex; align-items: center; justify-content: center; cursor: pointer; box-shadow: 0 4px 10px rgba(0,0,0,0.2); transition: all 0.2s ease; }
+        .avatar-edit-btn:hover { background: var(--primary-hover); transform: scale(1.1); }
+
+        .pagination-bar { display: flex; gap: 6px; align-items: center; justify-content: center; margin-top: 20px; }
+        .page-btn { background: #fff; border: 1px solid var(--border-color); color: var(--text-main); padding: 8px 14px; border-radius: 8px; font-weight: 700; cursor: pointer; transition: all 0.2s; font-size: 0.88rem; }
+        .page-btn.active, .page-btn:hover:not(:disabled) { background: var(--primary); color: #fff; border-color: var(--primary); }
+        .page-btn:disabled { opacity: 0.5; cursor: not-allowed; }
+
         .main-footer { background: var(--dark-bg); color: #94a3b8; padding: 40px 20px 20px; margin-top: auto; font-size: 0.9rem; }
     </style>
 </head>
@@ -316,7 +326,15 @@
             { id: 1, name: 'Quản Trị Viên Hệ Thống', username: 'admin', email: 'admin@safeschool.vn', phone: '0900000000', role: 'Admin', school: 'Sở GD&ĐT', avatar: 'https://images.unsplash.com/photo-1534528741775-53994a69daeb?auto=format&fit=crop&w=200&q=80' },
             { id: 2, name: 'ThS. Tâm Lý Nguyễn Thanh Hà', username: 'staff', email: 'staff.ha@school.edu.vn', phone: '0911111111', role: 'Staff', school: 'THPT Nguyễn Trãi', avatar: 'https://images.unsplash.com/photo-1573496359142-b8d87734a5a2?auto=format&fit=crop&w=200&q=80' },
             { id: 3, name: 'Học sinh Nguyễn Văn A', username: 'student_a', email: 'student.a@gmail.com', phone: '0987654321', role: 'User', school: 'THPT Nguyễn Trãi', avatar: 'https://images.unsplash.com/photo-1535713875002-d1d0cf377fde?auto=format&fit=crop&w=200&q=80' },
-            { id: 4, name: 'Học sinh Trần Thị B', username: 'student_b', email: 'student.b@gmail.com', phone: '0977123456', role: 'User', school: 'THCS Lê Lợi', avatar: 'https://images.unsplash.com/photo-1494790108377-be9c29b29330?auto=format&fit=crop&w=200&q=80' }
+            { id: 4, name: 'Học sinh Trần Thị B', username: 'student_b', email: 'student.b@gmail.com', phone: '0977123456', role: 'User', school: 'THCS Lê Lợi', avatar: 'https://images.unsplash.com/photo-1494790108377-be9c29b29330?auto=format&fit=crop&w=200&q=80' },
+            { id: 5, name: 'Lê Hoàng Nam', username: 'hoangnam', email: 'nam.le@gmail.com', phone: '0966554433', role: 'User', school: 'THPT Chuyên Hà Nội', avatar: 'https://images.unsplash.com/photo-1507003211169-0a1dd7228f2d?auto=format&fit=crop&w=200&q=80' },
+            { id: 6, name: 'Phạm Minh Châu', username: 'minhchau', email: 'chau.pham@gmail.com', phone: '0944332211', role: 'User', school: 'THPT Kim Liên', avatar: 'https://images.unsplash.com/photo-1544005313-94ddf0286df2?auto=format&fit=crop&w=200&q=80' },
+            { id: 7, name: 'Đỗ Tuấn Anh', username: 'tuananh', email: 'tuananh.do@gmail.com', phone: '0933221100', role: 'User', school: 'THPT Yên Hòa', avatar: 'https://images.unsplash.com/photo-1500648767791-00dcc994a43e?auto=format&fit=crop&w=200&q=80' },
+            { id: 8, name: 'Thầy Vũ Văn Hoàng (GVCN)', username: 'vuhoang', email: 'hoang.vu@school.edu.vn', phone: '0988776655', role: 'Staff', school: 'THPT Việt Đức', avatar: 'https://images.unsplash.com/photo-1472099645785-5658abf4ff4e?auto=format&fit=crop&w=200&q=80' },
+            { id: 9, name: 'Nguyễn Bích Phương', username: 'bichphuong', email: 'phuong.nb@gmail.com', phone: '0912998877', role: 'User', school: 'THCS Giảng Võ', avatar: 'https://images.unsplash.com/photo-1524504388940-b1c1722653e1?auto=format&fit=crop&w=200&q=80' },
+            { id: 10, name: 'Đặng Bảo Long', username: 'baolong', email: 'long.db@gmail.com', phone: '0922887766', role: 'User', school: 'THPT Chu Văn An', avatar: 'https://images.unsplash.com/photo-1519085360753-af0119f7cbe7?auto=format&fit=crop&w=200&q=80' },
+            { id: 11, name: 'Cô Hoàng Thu Thủy (Tâm lý)', username: 'thuthuy', email: 'thuy.ht@school.edu.vn', phone: '0933991122', role: 'Staff', school: 'THPT Thăng Long', avatar: 'https://images.unsplash.com/photo-1580489944761-15a19d654956?auto=format&fit=crop&w=200&q=80' },
+            { id: 12, name: 'Trần Gia Huy', username: 'giahuy', email: 'huy.tg@gmail.com', phone: '0955667788', role: 'User', school: 'THPT Nguyễn Trãi', avatar: 'https://images.unsplash.com/photo-1539571696357-5a69c17a67c6?auto=format&fit=crop&w=200&q=80' }
         ];
 
         const store = {
@@ -324,6 +342,10 @@
             currentUser: JSON.parse(localStorage.getItem('safeschool_user')) || null,
             forumSort: 'popular', // popular, new, week, month
             commentSort: 'relevant', // relevant, newest, hot
+            adminUserSearch: '',
+            adminUserRoleFilter: 'all',
+            adminCurrentPage: 1,
+            adminPageSize: 5,
             activeReplyCmtId: null,
             currentModal: null, // { type, id }
             reports: [
@@ -455,6 +477,33 @@
             localStorage.setItem('safeschool_users_db', JSON.stringify(store.users));
         }
 
+        // HANDLE AVATAR FILE UPLOAD DIRECTLY FROM COMPUTER
+        function handleAvatarUpload(event) {
+            const file = event.target.files[0];
+            if (file && store.currentUser) {
+                const reader = new FileReader();
+                reader.onload = function(e) {
+                    const newAvatarBase64 = e.target.result;
+                    
+                    // Update current user
+                    store.currentUser.avatar = newAvatarBase64;
+                    localStorage.setItem('safeschool_user', JSON.stringify(store.currentUser));
+
+                    // Update user in users DB
+                    const target = store.users.find(u => u.id === store.currentUser.id || u.username === store.currentUser.username);
+                    if (target) {
+                        target.avatar = newAvatarBase64;
+                        saveUsersDB();
+                    }
+
+                    updateNavbarAuthUI();
+                    showPage('profile');
+                    alert('🎉 Đã cập nhật ảnh đại diện Avatar mới thành công!');
+                };
+                reader.readAsDataURL(file);
+            }
+        }
+
         function handleLoginSubmit(event, method) {
             if (event) event.preventDefault();
             
@@ -509,6 +558,23 @@
                 updateNavbarAuthUI();
                 showPage('admin');
             }
+        }
+
+        function setAdminPage(pageNum) {
+            store.adminCurrentPage = pageNum;
+            showPage('admin');
+        }
+
+        function filterAdminSearch(val) {
+            store.adminUserSearch = val;
+            store.adminCurrentPage = 1; // Reset to page 1 on new search
+            showPage('admin');
+        }
+
+        function filterAdminRole(roleVal) {
+            store.adminUserRoleFilter = roleVal;
+            store.adminCurrentPage = 1;
+            showPage('admin');
         }
 
         function simLogout() {
@@ -738,24 +804,45 @@
                     <div>${postsHtml.length > 0 ? postsHtml : '<div class="card" style="text-align:center; padding: 40px;">Chưa có bài viết nào trong mốc thời gian này.</div>'}</div>
                 `;
             } else if (pageId === 'admin') {
-                // ADMIN PANEL (ONLY FOR ADMIN USER)
+                // ADMIN PANEL WITH SEARCH & PAGINATION
                 if (!store.currentUser || store.currentUser.role !== 'Admin') {
                     alert('⚠️ Bạn không có quyền Admin để truy cập Bảng Quản Trị Hệ Thống!');
                     showPage('home');
                     return;
                 }
 
-                const usersTableRows = store.users.map(u => {
+                // Search & Role filtering logic
+                let filteredUsers = store.users.filter(u => {
+                    const q = store.adminUserSearch.toLowerCase().trim();
+                    const matchesQuery = !q || 
+                        u.name.toLowerCase().includes(q) ||
+                        u.username.toLowerCase().includes(q) ||
+                        u.email.toLowerCase().includes(q) ||
+                        u.phone.includes(q);
+
+                    const matchesRole = (store.adminUserRoleFilter === 'all') || (u.role === store.adminUserRoleFilter);
+                    return matchesQuery && matchesRole;
+                });
+
+                // Pagination logic
+                const totalUsers = filteredUsers.length;
+                const totalPages = Math.ceil(totalUsers / store.adminPageSize) || 1;
+                if (store.adminCurrentPage > totalPages) store.adminCurrentPage = totalPages;
+                
+                const startIndex = (store.adminCurrentPage - 1) * store.adminPageSize;
+                const paginatedUsers = filteredUsers.slice(startIndex, startIndex + store.adminPageSize);
+
+                const usersTableRows = paginatedUsers.map(u => {
                     const roleBadgeClass = u.role === 'Admin' ? 'badge-admin' : (u.role === 'Staff' ? 'badge-staff' : 'badge-success');
                     return `
                         <tr style="border-bottom: 1px solid var(--border-color);">
                             <td style="padding: 14px; font-weight: 700;">#${u.id}</td>
                             <td style="padding: 14px;">
                                 <div style="display: flex; align-items: center; gap: 10px;">
-                                    <img src="${u.avatar}" style="width: 36px; height: 36px; border-radius: 50%; object-fit: cover;" />
+                                    <img src="${u.avatar}" style="width: 38px; height: 38px; border-radius: 50%; object-fit: cover;" />
                                     <div>
                                         <strong>${u.name}</strong>
-                                        <div style="font-size: 0.8rem; color: var(--text-muted);">Username: ${u.username}</div>
+                                        <div style="font-size: 0.8rem; color: var(--text-muted);">Username: <code>${u.username}</code></div>
                                     </div>
                                 </div>
                             </td>
@@ -776,12 +863,33 @@
                     `;
                 }).join('');
 
+                // Pagination buttons HTML
+                let paginationBtnsHtml = '';
+                for (let i = 1; i <= totalPages; i++) {
+                    paginationBtnsHtml += `<button class="page-btn ${i === store.adminCurrentPage ? 'active' : ''}" onclick="setAdminPage(${i})">${i}</button>`;
+                }
+
                 content.innerHTML = `
                     <div style="max-width: 1000px; margin: 0 auto;">
                         <div style="margin-bottom: 24px;">
                             <span class="badge badge-admin" style="font-size: 0.9rem; padding: 6px 16px; margin-bottom: 8px;"><i class="bi bi-shield-shaded"></i> BẢNG QUẢN TRỊ ADMIN BẢO MẬT</span>
                             <h1 style="font-size: 2.2rem; font-weight: 800;">Quản Lý Người Dùng & Phân Quyền Vai Trò (Role Management)</h1>
-                            <p style="color: var(--text-muted);">Admin có quyền nâng người dùng thường (Học sinh) lên làm <strong>Staff (Cán bộ tư vấn / Thầy cô)</strong> để hỗ trợ giải quyết báo cáo & tương tác diễn đàn.</p>
+                            <p style="color: var(--text-muted);">Tìm kiếm danh sách người dùng, nâng quyền Staff cho tài khoản đủ điều kiện.</p>
+                        </div>
+
+                        <!-- SEARCH & FILTER BAR -->
+                        <div style="display: flex; gap: 12px; margin-bottom: 20px; flex-wrap: wrap; align-items: center;">
+                            <div style="flex: 1; min-width: 260px;">
+                                <input type="text" class="form-control" placeholder="🔍 Tìm kiếm theo Họ tên, Username, Email, SĐT..." value="${store.adminUserSearch}" oninput="filterAdminSearch(this.value)" />
+                            </div>
+                            <div style="width: 200px;">
+                                <select class="form-control" onchange="filterAdminRole(this.value)">
+                                    <option value="all" ${store.adminUserRoleFilter === 'all' ? 'selected' : ''}>Tất cả vai trò</option>
+                                    <option value="User" ${store.adminUserRoleFilter === 'User' ? 'selected' : ''}>Học sinh (User)</option>
+                                    <option value="Staff" ${store.adminUserRoleFilter === 'Staff' ? 'selected' : ''}>Cán bộ (Staff)</option>
+                                    <option value="Admin" ${store.adminUserRoleFilter === 'Admin' ? 'selected' : ''}>Quản trị viên (Admin)</option>
+                                </select>
+                            </div>
                         </div>
 
                         <div class="card" style="padding: 24px;">
@@ -796,9 +904,23 @@
                                     </tr>
                                 </thead>
                                 <tbody>
-                                    ${usersTableRows}
+                                    ${paginatedUsers.length > 0 ? usersTableRows : `<tr><td colspan="5" style="text-align: center; padding: 32px; color: var(--rose);">Không tìm thấy người dùng nào phù hợp với từ khóa "${store.adminUserSearch}".</td></tr>`}
                                 </tbody>
                             </table>
+
+                            <!-- PAGINATION CONTROLS -->
+                            <div style="display: flex; justify-content: space-between; align-items: center; margin-top: 20px; border-top: 1px solid var(--border-color); padding-top: 16px; flex-wrap: wrap; gap: 12px;">
+                                <div style="font-size: 0.88rem; color: var(--text-muted);">
+                                    Hiển thị <strong>${paginatedUsers.length}</strong> / <strong>${totalUsers}</strong> người dùng (Trang ${store.adminCurrentPage}/${totalPages})
+                                </div>
+                                <div class="pagination-bar" style="margin-top: 0;">
+                                    <button class="page-btn" onclick="setAdminPage(1)" ${store.adminCurrentPage === 1 ? 'disabled' : ''}>&laquo; Đầu</button>
+                                    <button class="page-btn" onclick="setAdminPage(${store.adminCurrentPage - 1})" ${store.adminCurrentPage === 1 ? 'disabled' : ''}>&lsaquo; Trước</button>
+                                    ${paginationBtnsHtml}
+                                    <button class="page-btn" onclick="setAdminPage(${store.adminCurrentPage + 1})" ${store.adminCurrentPage === totalPages ? 'disabled' : ''}>Sau &rsaquo;</button>
+                                    <button class="page-btn" onclick="setAdminPage(${totalPages})" ${store.adminCurrentPage === totalPages ? 'disabled' : ''}>Cuối &raquo;</button>
+                                </div>
+                            </div>
                         </div>
                     </div>
                 `;
@@ -812,22 +934,36 @@
 
                 content.innerHTML = `
                     <div style="max-width: 900px; margin: 0 auto;">
-                        <!-- PROFILE HEADER CARD -->
+                        <!-- PROFILE HEADER CARD WITH INTERACTIVE AVATAR UPLOAD -->
                         <div class="card" style="padding: 32px; margin-bottom: 32px; background: linear-gradient(135deg, #ffffff 0%, #f8fafc 100%);">
-                            <div style="display: flex; gap: 24px; align-items: center; flex-wrap: wrap;">
-                                <img src="${u.avatar}" style="width: 100px; height: 100px; border-radius: 50%; object-fit: cover; border: 4px solid var(--primary-light); box-shadow: 0 8px 20px rgba(0,0,0,0.1);" />
+                            <div style="display: flex; gap: 28px; align-items: center; flex-wrap: wrap;">
+                                
+                                <!-- AVATAR WITH CAMERA OVERLAY FOR DIRECT COMPUTER FILE UPLOAD -->
+                                <div class="avatar-wrapper">
+                                    <img src="${u.avatar}" class="avatar-img" id="userProfileAvatarImg" />
+                                    <button type="button" class="avatar-edit-btn" title="Đổi ảnh đại diện Avatar từ máy tính" onclick="document.getElementById('avatarFileInput').click()">
+                                        <i class="bi bi-camera-fill"></i>
+                                    </button>
+                                    <input type="file" id="avatarFileInput" accept="image/*" style="display: none;" onchange="handleAvatarUpload(event)" />
+                                </div>
+
                                 <div style="flex: 1;">
                                     <div style="display: flex; align-items: center; gap: 12px; margin-bottom: 6px;">
                                         <h1 style="font-size: 1.8rem; font-weight: 800;">${u.name}</h1>
                                         <span class="badge ${roleBadgeClass}" style="font-size: 0.85rem; padding: 6px 14px;"><i class="bi bi-shield-check"></i> ${u.role}</span>
                                     </div>
-                                    <p style="color: var(--text-muted); font-size: 0.95rem; margin-bottom: 12px;">
+                                    <p style="color: var(--text-muted); font-size: 0.95rem; margin-bottom: 14px;">
                                         <i class="bi bi-envelope-fill"></i> ${u.email} &bull; <i class="bi bi-building-fill"></i> ${u.school}
                                     </p>
-                                    <div style="display: flex; gap: 12px;">
-                                        <button class="btn btn-primary" onclick="toggleCreatePostModal(true)"><i class="bi bi-pencil-square"></i> Viết Bài Tâm Sự Mới</button>
-                                        ${u.role === 'Admin' ? '<button class="btn btn-secondary" style="color: #b45309;" onclick="showPage(\'admin\')"><i class="bi bi-shield-shaded"></i> Bảng Quản Trị Admin</button>' : ''}
-                                        <button class="btn btn-secondary" onclick="simLogout()"><i class="bi bi-box-arrow-right"></i> Đăng xuất</button>
+                                    <div style="display: flex; gap: 10px; flex-wrap: wrap;">
+                                        <button class="btn btn-secondary" style="padding: 8px 16px; font-size: 0.88rem;" onclick="document.getElementById('avatarFileInput').click()">
+                                            <i class="bi bi-upload"></i> Chọn Ảnh Làm Avatar
+                                        </button>
+                                        <button class="btn btn-primary" style="padding: 8px 16px; font-size: 0.88rem;" onclick="toggleCreatePostModal(true)">
+                                            <i class="bi bi-pencil-square"></i> Viết Bài Tâm Sự
+                                        </button>
+                                        ${u.role === 'Admin' ? '<button class="btn btn-secondary" style="color: #b45309; padding: 8px 16px; font-size: 0.88rem;" onclick="showPage(\'admin\')"><i class="bi bi-shield-shaded"></i> Bảng Quản Trị Admin</button>' : ''}
+                                        <button class="btn btn-secondary" style="padding: 8px 16px; font-size: 0.88rem; color: #ef4444;" onclick="simLogout()"><i class="bi bi-box-arrow-right"></i> Đăng xuất</button>
                                     </div>
                                 </div>
                             </div>
