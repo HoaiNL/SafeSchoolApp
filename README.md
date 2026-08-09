@@ -7,7 +7,7 @@
 ---
 
 ## 🌟 Giới thiệu
-**SafeSchool (Trường Học An Toàn)** là nền tảng website thương mại & hỗ trợ nạn nhân bắt nạt học đường hàng đầu Việt Nam.  
+**SafeSchool (Trường Học An Toàn)** là nền tảng website hỗ trợ nạn nhân bắt nạt học đường hàng đầu Việt Nam.  
 Hệ thống cung cấp giải pháp **Báo cáo ẩn danh 100%**, kết nối đường dây nóng khẩn cấp (**111 / 113 / 115**), tích hợp **AI Support Trợ lý Tâm lý & Khẩn cấp 24/7**, **Diễn đàn học đường** chia sẻ tâm sự ẩn danh, cùng **Cẩm nang kỹ năng tự vệ & tư vấn pháp lý**.
 
 ---
