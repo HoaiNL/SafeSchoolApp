@@ -146,6 +146,7 @@
                 <li><button onclick="showPage('report')" id="nav-report">Báo Cáo Ẩn Danh</button></li>
                 <li><button onclick="showPage('track')" id="nav-track">Tra Cứu Mã</button></li>
                 <li id="navProfileTab" style="display: none;"><button onclick="showPage('profile')" id="nav-profile"><i class="bi bi-person-fill"></i> Trang Cá Nhân</button></li>
+                <li id="navAdminTab" style="display: none;"><button onclick="showPage('admin')" id="nav-admin" style="color: #b45309;"><i class="bi bi-shield-shaded"></i> Quản Lý Hệ Thống (Admin)</button></li>
             </ul>
             <div style="display: flex; gap: 10px; align-items: center;" id="navAuthArea">
                 <!-- RENDERED DYNAMICALLY (LOGIN BTN OR USER PROFILE BADGE) -->
@@ -181,7 +182,7 @@
         </div>
     </div>
 
-    <!-- AUTH MODAL WITH REALISTIC LOGIN FORMS -->
+    <!-- AUTH MODAL FOR STANDARD LOGIN (NO ROLE SELECTOR) -->
     <div class="modal-overlay" id="authModal">
         <div class="modal-card" style="width: 520px;">
             <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 20px;">
@@ -189,13 +190,9 @@
                 <button onclick="toggleAuthModal(false)" style="background: none; border: none; font-size: 1.5rem; cursor: pointer;">&times;</button>
             </div>
             
-            <div style="background: #f8fafc; padding: 14px; border-radius: 12px; margin-bottom: 20px; border: 1px solid var(--border-color);">
-                <label style="font-size: 0.85rem; font-weight: 700; color: var(--text-muted); display: block; margin-bottom: 6px;">⚡ CHỌN VAI TRÒ TÀI KHOẢN KHI ĐĂNG NHẬP:</label>
-                <select id="loginRoleSelect" class="form-control" style="font-weight: 700; color: var(--primary-hover);">
-                    <option value="User">👤 Người Dùng / Học Sinh (Role: User)</option>
-                    <option value="Staff">🔰 Cán Bộ Tư Vấn / Thầy Cô (Role: Staff)</option>
-                    <option value="Admin">👑 Quản Trị Viên Hệ Thống (Role: Admin)</option>
-                </select>
+            <div style="background: #e0e7ff; padding: 12px 16px; border-radius: 12px; margin-bottom: 20px; font-size: 0.88rem; color: #3730a3;">
+                <strong><i class="bi bi-info-circle-fill"></i> Mặc định Đăng Nhập là Tài Khoản Người Dùng.</strong><br>
+                Tài khoản Staff sẽ do Admin phê duyệt & nâng quyền từ danh sách Quản lý Hệ Thống!
             </div>
 
             <div class="auth-tabs">
@@ -204,27 +201,34 @@
                 <button class="tab-btn" id="t-gmail" onclick="switchTab('gmail')">Gmail / Google</button>
             </div>
 
-            <form onsubmit="handleLoginSubmit(event, 'sđt')">
+            <form onsubmit="handleLoginSubmit(event, 'phone')">
                 <div id="c-phone">
                     <div class="form-group"><label>Số điện thoại</label><input type="tel" id="loginPhone" class="form-control" placeholder="0987654321" value="0987654321" required /></div>
                     <div class="form-group"><label>Mật khẩu</label><input type="password" class="form-control" placeholder="••••••••" value="123456" required /></div>
-                    <button type="submit" class="btn btn-primary" style="width: 100%; margin-top: 8px;"><i class="bi bi-box-arrow-in-right"></i> Đăng Nhập SĐT</button>
+                    <button type="submit" class="btn btn-primary" style="width: 100%; margin-top: 8px;"><i class="bi bi-box-arrow-in-right"></i> Đăng Nhập (SĐT)</button>
                 </div>
             </form>
 
-            <form onsubmit="handleLoginSubmit(event, 'username')">
+            <form onsubmit="handleLoginSubmit(event, 'user')">
                 <div id="c-user" style="display: none;">
-                    <div class="form-group"><label>Tên đăng nhập</label><input type="text" id="loginUser" class="form-control" placeholder="Username" value="hocsinh_minh" required /></div>
+                    <div class="form-group"><label>Tên đăng nhập</label><input type="text" id="loginUser" class="form-control" placeholder="Username (VD: admin, staff, student_a)" value="student_a" required /></div>
                     <div class="form-group"><label>Mật khẩu</label><input type="password" class="form-control" placeholder="••••••••" value="123456" required /></div>
-                    <button type="submit" class="btn btn-primary" style="width: 100%; margin-top: 8px;"><i class="bi bi-person-fill"></i> Đăng Nhập Username</button>
+                    <button type="submit" class="btn btn-primary" style="width: 100%; margin-top: 8px;"><i class="bi bi-person-fill"></i> Đăng Nhập (Username)</button>
                 </div>
             </form>
 
             <div id="c-gmail" style="display: none; text-align: center;">
-                <p style="color: var(--text-muted); font-size: 0.9rem; margin-bottom: 20px;">Đăng nhập an toàn bằng tài khoản Google / Gmail cá nhân của bạn.</p>
+                <p style="color: var(--text-muted); font-size: 0.9rem; margin-bottom: 20px;">Đăng nhập bằng Google / Gmail sẽ mặc định gán tài khoản Người Dùng (Học sinh).</p>
                 <button type="button" class="btn btn-secondary" style="width: 100%; padding: 12px; font-weight: 700;" onclick="handleLoginSubmit(event, 'gmail')">
-                    <i class="bi bi-google" style="color: #ea4335;"></i> Xác nhận Đăng nhập bằng Google / Gmail
+                    <i class="bi bi-google" style="color: #ea4335;"></i> Tiếp tục với Google / Gmail
                 </button>
+            </div>
+
+            <div style="margin-top: 20px; border-top: 1px solid var(--border-color); padding-top: 14px; font-size: 0.82rem; color: var(--text-muted);">
+                <strong>💡 Mẹo test nhanh các tài khoản mẫu:</strong><br>
+                - Username: <code>admin</code> (Quyền Admin Quản trị)<br>
+                - Username: <code>staff</code> (Quyền Cán bộ tư vấn Staff)<br>
+                - Username: <code>student_a</code> hoặc SĐT <code>0987654321</code> (Quyền Học sinh User)
             </div>
         </div>
     </div>
@@ -308,7 +312,15 @@
     <script>
         let uploadedImageBase64 = null;
 
+        const defaultUsers = [
+            { id: 1, name: 'Quản Trị Viên Hệ Thống', username: 'admin', email: 'admin@safeschool.vn', phone: '0900000000', role: 'Admin', school: 'Sở GD&ĐT', avatar: 'https://images.unsplash.com/photo-1534528741775-53994a69daeb?auto=format&fit=crop&w=200&q=80' },
+            { id: 2, name: 'ThS. Tâm Lý Nguyễn Thanh Hà', username: 'staff', email: 'staff.ha@school.edu.vn', phone: '0911111111', role: 'Staff', school: 'THPT Nguyễn Trãi', avatar: 'https://images.unsplash.com/photo-1573496359142-b8d87734a5a2?auto=format&fit=crop&w=200&q=80' },
+            { id: 3, name: 'Học sinh Nguyễn Văn A', username: 'student_a', email: 'student.a@gmail.com', phone: '0987654321', role: 'User', school: 'THPT Nguyễn Trãi', avatar: 'https://images.unsplash.com/photo-1535713875002-d1d0cf377fde?auto=format&fit=crop&w=200&q=80' },
+            { id: 4, name: 'Học sinh Trần Thị B', username: 'student_b', email: 'student.b@gmail.com', phone: '0977123456', role: 'User', school: 'THCS Lê Lợi', avatar: 'https://images.unsplash.com/photo-1494790108377-be9c29b29330?auto=format&fit=crop&w=200&q=80' }
+        ];
+
         const store = {
+            users: JSON.parse(localStorage.getItem('safeschool_users_db')) || defaultUsers,
             currentUser: JSON.parse(localStorage.getItem('safeschool_user')) || null,
             forumSort: 'popular', // popular, new, week, month
             commentSort: 'relevant', // relevant, newest, hot
@@ -439,41 +451,64 @@
             ]
         };
 
+        function saveUsersDB() {
+            localStorage.setItem('safeschool_users_db', JSON.stringify(store.users));
+        }
+
         function handleLoginSubmit(event, method) {
             if (event) event.preventDefault();
-            const roleSelect = document.getElementById('loginRoleSelect');
-            const selectedRole = roleSelect ? roleSelect.value : 'User';
             
-            let name = 'Học sinh Nguyễn Minh';
-            let email = 'student.minh@school.edu.vn';
-            let avatar = 'https://images.unsplash.com/photo-1535713875002-d1d0cf377fde?auto=format&fit=crop&w=200&q=80';
-
-            if (selectedRole === 'Admin') {
-                name = 'Quản Trị Viên Hệ Thống';
-                email = 'admin@safeschool.vn';
-                avatar = 'https://images.unsplash.com/photo-1534528741775-53994a69daeb?auto=format&fit=crop&w=200&q=80';
-            } else if (selectedRole === 'Staff') {
-                name = 'ThS. Tâm lý Nguyễn Thanh Hà';
-                email = 'staff.ha@school.edu.vn';
-                avatar = 'https://images.unsplash.com/photo-1573496359142-b8d87734a5a2?auto=format&fit=crop&w=200&q=80';
+            let matchedUser = null;
+            if (method === 'user') {
+                const uVal = document.getElementById('loginUser').value.trim().toLowerCase();
+                matchedUser = store.users.find(u => u.username.toLowerCase() === uVal);
+            } else if (method === 'phone') {
+                const pVal = document.getElementById('loginPhone').value.trim();
+                matchedUser = store.users.find(u => u.phone === pVal);
             }
 
-            const user = {
-                name: name,
-                email: email,
-                role: selectedRole,
-                school: 'THPT Nguyễn Trãi',
-                joinedDate: '2026-01-15',
-                avatar: avatar
-            };
+            // Fallback: If registering new or using Gmail, default to standard User role
+            if (!matchedUser) {
+                matchedUser = {
+                    id: Date.now(),
+                    name: 'Học sinh Nguyễn Văn C',
+                    username: 'user_' + Math.floor(Math.random()*1000),
+                    email: 'student.c@gmail.com',
+                    phone: '0912345678',
+                    role: 'User', // DEFAULT IS STANDARD USER
+                    school: 'THPT Nguyễn Trãi',
+                    joinedDate: '2026-08-09',
+                    avatar: 'https://images.unsplash.com/photo-1535713875002-d1d0cf377fde?auto=format&fit=crop&w=200&q=80'
+                };
+                store.users.push(matchedUser);
+                saveUsersDB();
+            }
 
-            store.currentUser = user;
-            localStorage.setItem('safeschool_user', JSON.stringify(user));
+            store.currentUser = matchedUser;
+            localStorage.setItem('safeschool_user', JSON.stringify(matchedUser));
             updateNavbarAuthUI();
             toggleAuthModal(false);
             
             // Navigate to User Profile page
             showPage('profile');
+        }
+
+        function promoteUserRole(userId, newRole) {
+            const target = store.users.find(u => u.id === userId);
+            if (target) {
+                target.role = newRole;
+                saveUsersDB();
+                
+                // If currently logged in user is promoted/demoted, update state
+                if (store.currentUser && store.currentUser.id === userId) {
+                    store.currentUser.role = newRole;
+                    localStorage.setItem('safeschool_user', JSON.stringify(store.currentUser));
+                }
+
+                alert(`🎉 Đã nâng/thay đổi quyền của [${target.name}] thành [${newRole.toUpperCase()}] thành công!`);
+                updateNavbarAuthUI();
+                showPage('admin');
+            }
         }
 
         function simLogout() {
@@ -495,10 +530,13 @@
         function updateNavbarAuthUI() {
             const area = document.getElementById('navAuthArea');
             const profileTab = document.getElementById('navProfileTab');
+            const adminTab = document.getElementById('navAdminTab');
             if (!area) return;
 
             if (store.currentUser) {
                 if (profileTab) profileTab.style.display = 'block';
+                if (adminTab) adminTab.style.display = (store.currentUser.role === 'Admin') ? 'block' : 'none';
+
                 const roleBadgeClass = store.currentUser.role === 'Admin' ? 'badge-admin' : (store.currentUser.role === 'Staff' ? 'badge-staff' : 'badge-success');
                 
                 area.innerHTML = `
@@ -511,6 +549,8 @@
                 `;
             } else {
                 if (profileTab) profileTab.style.display = 'none';
+                if (adminTab) adminTab.style.display = 'none';
+
                 area.innerHTML = `
                     <button class="btn btn-secondary" onclick="toggleAuthModal(true)"><i class="bi bi-box-arrow-in-right"></i> Đăng Nhập</button>
                     <button class="btn btn-danger" onclick="showPage('report')"><i class="bi bi-exclamation-triangle-fill"></i> Gửi Báo Cáo</button>
@@ -697,6 +737,71 @@
 
                     <div>${postsHtml.length > 0 ? postsHtml : '<div class="card" style="text-align:center; padding: 40px;">Chưa có bài viết nào trong mốc thời gian này.</div>'}</div>
                 `;
+            } else if (pageId === 'admin') {
+                // ADMIN PANEL (ONLY FOR ADMIN USER)
+                if (!store.currentUser || store.currentUser.role !== 'Admin') {
+                    alert('⚠️ Bạn không có quyền Admin để truy cập Bảng Quản Trị Hệ Thống!');
+                    showPage('home');
+                    return;
+                }
+
+                const usersTableRows = store.users.map(u => {
+                    const roleBadgeClass = u.role === 'Admin' ? 'badge-admin' : (u.role === 'Staff' ? 'badge-staff' : 'badge-success');
+                    return `
+                        <tr style="border-bottom: 1px solid var(--border-color);">
+                            <td style="padding: 14px; font-weight: 700;">#${u.id}</td>
+                            <td style="padding: 14px;">
+                                <div style="display: flex; align-items: center; gap: 10px;">
+                                    <img src="${u.avatar}" style="width: 36px; height: 36px; border-radius: 50%; object-fit: cover;" />
+                                    <div>
+                                        <strong>${u.name}</strong>
+                                        <div style="font-size: 0.8rem; color: var(--text-muted);">Username: ${u.username}</div>
+                                    </div>
+                                </div>
+                            </td>
+                            <td style="padding: 14px; font-size: 0.9rem;">${u.email}<br><small style="color: var(--text-muted);">${u.phone}</small></td>
+                            <td style="padding: 14px;"><span class="badge ${roleBadgeClass}">${u.role}</span></td>
+                            <td style="padding: 14px; text-align: right;">
+                                ${u.role === 'User' ? `
+                                    <button class="btn btn-primary" style="padding: 6px 14px; font-size: 0.82rem;" onclick="promoteUserRole(${u.id}, 'Staff')">
+                                        <i class="bi bi-shield-plus"></i> Nâng lên Staff (Cán bộ)
+                                    </button>
+                                ` : (u.role === 'Staff' ? `
+                                    <button class="btn btn-secondary" style="padding: 6px 12px; font-size: 0.82rem; color: #ef4444;" onclick="promoteUserRole(${u.id}, 'User')">
+                                        <i class="bi bi-arrow-down-circle"></i> Hạ xuống User
+                                    </button>
+                                ` : '<span style="color: var(--text-muted); font-style: italic;">Quản trị viên mặc định</span>')}
+                            </td>
+                        </tr>
+                    `;
+                }).join('');
+
+                content.innerHTML = `
+                    <div style="max-width: 1000px; margin: 0 auto;">
+                        <div style="margin-bottom: 24px;">
+                            <span class="badge badge-admin" style="font-size: 0.9rem; padding: 6px 16px; margin-bottom: 8px;"><i class="bi bi-shield-shaded"></i> BẢNG QUẢN TRỊ ADMIN BẢO MẬT</span>
+                            <h1 style="font-size: 2.2rem; font-weight: 800;">Quản Lý Người Dùng & Phân Quyền Vai Trò (Role Management)</h1>
+                            <p style="color: var(--text-muted);">Admin có quyền nâng người dùng thường (Học sinh) lên làm <strong>Staff (Cán bộ tư vấn / Thầy cô)</strong> để hỗ trợ giải quyết báo cáo & tương tác diễn đàn.</p>
+                        </div>
+
+                        <div class="card" style="padding: 24px;">
+                            <table style="width: 100%; border-collapse: collapse; text-align: left;">
+                                <thead>
+                                    <tr style="border-bottom: 2px solid var(--border-color); background: #f8fafc;">
+                                        <th style="padding: 12px;">ID</th>
+                                        <th style="padding: 12px;">Họ và Tên & Username</th>
+                                        <th style="padding: 12px;">Liên hệ</th>
+                                        <th style="padding: 12px;">Vai Trò Hiện Tại</th>
+                                        <th style="padding: 12px; text-align: right;">Hành Động Admin</th>
+                                    </tr>
+                                </thead>
+                                <tbody>
+                                    ${usersTableRows}
+                                </tbody>
+                            </table>
+                        </div>
+                    </div>
+                `;
             } else if (pageId === 'profile') {
                 if (!store.currentUser) {
                     showPage('home');
@@ -717,10 +822,11 @@
                                         <span class="badge ${roleBadgeClass}" style="font-size: 0.85rem; padding: 6px 14px;"><i class="bi bi-shield-check"></i> ${u.role}</span>
                                     </div>
                                     <p style="color: var(--text-muted); font-size: 0.95rem; margin-bottom: 12px;">
-                                        <i class="bi bi-envelope-fill"></i> ${u.email} &bull; <i class="bi bi-building-fill"></i> ${u.school} &bull; Tham gia: ${u.joinedDate}
+                                        <i class="bi bi-envelope-fill"></i> ${u.email} &bull; <i class="bi bi-building-fill"></i> ${u.school}
                                     </p>
                                     <div style="display: flex; gap: 12px;">
                                         <button class="btn btn-primary" onclick="toggleCreatePostModal(true)"><i class="bi bi-pencil-square"></i> Viết Bài Tâm Sự Mới</button>
+                                        ${u.role === 'Admin' ? '<button class="btn btn-secondary" style="color: #b45309;" onclick="showPage(\'admin\')"><i class="bi bi-shield-shaded"></i> Bảng Quản Trị Admin</button>' : ''}
                                         <button class="btn btn-secondary" onclick="simLogout()"><i class="bi bi-box-arrow-right"></i> Đăng xuất</button>
                                     </div>
                                 </div>
