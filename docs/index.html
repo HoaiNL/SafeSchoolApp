@@ -102,13 +102,14 @@
         .form-group label { display: block; font-weight: 600; font-size: 0.88rem; margin-bottom: 6px; }
         .form-control { width: 100%; padding: 12px 16px; border: 1px solid var(--border-color); border-radius: var(--radius-md); font-family: inherit; font-size: 0.95rem; }
 
-        .comment-item { background: #f8fafc; border: 1px solid var(--border-color); border-radius: var(--radius-md); padding: 16px 20px; margin-bottom: 14px; }
+        /* PROMINENT COMMENT ACTIONS BUTTON STYLES */
+        .comment-item { background: #f8fafc; border: 1px solid var(--border-color); border-radius: var(--radius-md); padding: 18px 20px; margin-bottom: 16px; }
         .comment-header { display: flex; justify-content: space-between; align-items: center; margin-bottom: 8px; }
-        .comment-actions { display: flex; gap: 14px; align-items: center; margin-top: 10px; }
-        .comment-action-btn { background: none; border: none; font-size: 0.85rem; font-weight: 700; color: var(--text-muted); cursor: pointer; display: flex; align-items: center; gap: 4px; }
-        .comment-action-btn:hover { color: var(--primary); }
+        .comment-actions { display: flex; gap: 12px; align-items: center; margin-top: 14px; border-top: 1px solid var(--border-color); padding-top: 12px; }
+        .comment-action-btn { background: #ffffff; border: 1px solid #cbd5e1; font-size: 0.88rem; font-weight: 700; color: #334155; padding: 6px 16px; border-radius: 50px; cursor: pointer; display: inline-flex; align-items: center; gap: 6px; transition: all 0.2s ease; box-shadow: 0 1px 2px rgba(0,0,0,0.05); }
+        .comment-action-btn:hover { background: var(--primary-light); color: var(--primary-hover); border-color: var(--primary); transform: translateY(-1px); }
         
-        .reply-item { background: #ffffff; border: 1px solid var(--border-color); border-radius: var(--radius-md); padding: 12px 16px; margin-top: 10px; margin-left: 24px; border-left: 4px solid var(--primary); }
+        .reply-item { background: #ffffff; border: 1px solid var(--border-color); border-radius: var(--radius-md); padding: 14px 18px; margin-top: 12px; margin-left: 28px; border-left: 4px solid var(--primary); box-shadow: 0 1px 3px rgba(0,0,0,0.04); }
 
         .main-footer { background: var(--dark-bg); color: #94a3b8; padding: 40px 20px 20px; margin-top: auto; font-size: 0.9rem; }
     </style>
@@ -621,13 +622,13 @@
 
             if (isReply && parentCmtId) {
                 const parent = item.comments.find(c => c.id === parentCmtId);
-                if (parent) {
+                if (parent && parent.replies) {
                     const r = parent.replies.find(x => x.id === cmtId);
-                    if (r) r.likes++;
+                    if (r) r.likes = (r.likes || 0) + 1;
                 }
             } else {
                 const c = item.comments.find(x => x.id === cmtId);
-                if (c) c.likes++;
+                if (c) c.likes = (c.likes || 0) + 1;
             }
             openDetailModal(type, itemId);
         }
@@ -674,6 +675,14 @@
 
             store.currentModal = { type, id };
 
+            // Ensure every comment has replies array and likes field initialized
+            if (item.comments) {
+                item.comments.forEach(c => {
+                    if (!c.replies) c.replies = [];
+                    if (typeof c.likes === 'undefined') c.likes = 5;
+                });
+            }
+
             // Sort Comments based on store.commentSort
             let sortedCmts = [...item.comments];
             if (store.commentSort === 'hot') {
@@ -694,7 +703,7 @@
                         </div>
                         <p style="font-size: 0.95rem; color: var(--text-main); margin-top: 4px;">${r.text}</p>
                         <div class="comment-actions">
-                            <button class="comment-action-btn" onclick="likeComment('${type}', ${item.id}, ${r.id}, true, ${c.id})">
+                            <button type="button" class="comment-action-btn" onclick="likeComment('${type}', ${item.id}, ${r.id}, true, ${c.id})">
                                 <i class="bi bi-heart-fill" style="color: #ef4444;"></i> Thích (${r.likes || 0})
                             </button>
                         </div>
@@ -711,17 +720,18 @@
                         </div>
                         <p style="font-size: 1rem; color: var(--text-main); margin-top: 6px; line-height: 1.5;">${c.text}</p>
                         
+                        <!-- HIGH VISIBILITY COMMENT ACTION BUTTONS -->
                         <div class="comment-actions">
-                            <button class="comment-action-btn" onclick="likeComment('${type}', ${item.id}, ${c.id})">
-                                <i class="bi bi-heart-fill" style="color: #ef4444;"></i> Thích (${c.likes || 0})
+                            <button type="button" class="comment-action-btn" onclick="likeComment('${type}', ${item.id}, ${c.id})">
+                                <i class="bi bi-heart-fill" style="color: #ef4444;"></i> Thích (<strong>${c.likes || 0}</strong>)
                             </button>
-                            <button class="comment-action-btn" onclick="toggleReplyForm(${c.id})">
-                                <i class="bi bi-reply-fill" style="color: var(--primary);"></i> Trả lời (${c.replies ? c.replies.length : 0})
+                            <button type="button" class="comment-action-btn" onclick="toggleReplyForm(${c.id})">
+                                <i class="bi bi-reply-fill" style="color: var(--primary);"></i> Trả lời (<strong>${c.replies ? c.replies.length : 0}</strong>)
                             </button>
                         </div>
 
                         ${showReplyForm ? `
-                            <form onsubmit="submitCommentReply(event, '${type}', ${item.id}, ${c.id})" style="margin-top: 14px; background: #ffffff; padding: 14px; border-radius: var(--radius-md); border: 1px solid var(--primary-light);">
+                            <form onsubmit="submitCommentReply(event, '${type}', ${item.id}, ${c.id})" style="margin-top: 14px; background: #ffffff; padding: 14px; border-radius: var(--radius-md); border: 2px solid var(--primary-light);">
                                 <div class="form-group" style="margin-bottom: 8px;">
                                     <input type="text" id="replyText_${c.id}" class="form-control" placeholder="Viết câu trả lời cho ${c.author}..." required autoFocus />
                                 </div>
@@ -934,7 +944,7 @@
             if (lower.includes('đánh') || lower.includes('bạo lực') || lower.includes('đe dọa') || lower.includes('tống tiền')) {
                 reply = "🛡️ **CẢNH BÁO NGUY HIỂM KHẨN CẤP!**\n1. Di chuyển ngay về phía văn phòng thầy cô, phòng bảo vệ.\n2. Gọi ngay hotline **111** (Bảo vệ Trẻ em 24/7) hoặc **113** (Cảnh sát).\n3. Bấm 'Gửi Báo Cáo Ẩn Danh' trên SafeSchool để Ban Giám Hiệu can thiệp xử lý!";
             } else if (lower.includes('cô lập') || lower.includes('buồn') || lower.includes('sợ')) {
-                reply = "🤝 **SafeSchool luôn ở bên em!**\nCảm giác bị cô lập rất đau đớn, nhưng em không hề làm gì sai cả. Em có thể viết bài chia sẻ ẩn danh trên Diễn Đàn SafeSchool để nhận lời khuyên!";
+                reply = "🤝 **SafeSchool luôn ở bên em!**\nCảm giác bị cô lập rất đau đốn, nhưng em không hề làm gì sai cả. Em có thể viết bài chia sẻ ẩn danh trên Diễn Đàn SafeSchool để nhận lời khuyên!";
             }
 
             setTimeout(() => {
