@@ -46,7 +46,7 @@
         .main-header { background: var(--glass-bg); backdrop-filter: blur(12px); border-bottom: 1px solid var(--border-color); position: sticky; top: 37px; z-index: 1000; padding: 12px 24px; }
         .navbar-container { max-width: 1240px; margin: 0 auto; display: flex; justify-content: space-between; align-items: center; }
         .brand-logo { display: flex; align-items: center; gap: 10px; font-size: 1.4rem; font-weight: 800; color: var(--primary-hover); }
-        .nav-links { display: flex; gap: 20px; list-style: none; align-items: center; }
+        .nav-links { display: flex; gap: 16px; list-style: none; align-items: center; }
         .nav-links button { background: none; border: none; font-family: inherit; font-weight: 600; color: var(--text-main); padding: 8px 12px; border-radius: var(--radius-md); cursor: pointer; font-size: 0.95rem; }
         .nav-links button.active, .nav-links button:hover { background: var(--primary-light); color: var(--primary-hover); }
 
@@ -56,6 +56,7 @@
         .btn-danger { background: linear-gradient(135deg, #ef4444 0%, #dc2626 100%); color: #fff; box-shadow: 0 4px 14px rgba(239, 68, 68, 0.35); }
         .btn-danger:hover { transform: translateY(-2px); color: #fff; }
         .btn-secondary { background: #ffffff; color: var(--text-main); border: 1px solid var(--border-color); }
+        .btn-secondary:hover { background: #f8fafc; border-color: #cbd5e1; }
         
         .badge { padding: 4px 10px; border-radius: 50px; font-size: 0.78rem; font-weight: 700; display: inline-block; }
         .badge-anon { background: #f1f5f9; color: #475569; border: 1px solid #cbd5e1; }
@@ -67,11 +68,18 @@
         .hero-title { font-size: 2.5rem; font-weight: 800; line-height: 1.2; margin-bottom: 16px; }
         .hero-subtitle { font-size: 1.1rem; opacity: 0.9; margin-bottom: 28px; }
 
-        .grid-3 { display: grid; grid-template-columns: repeat(auto-fit, minmax(300px, 1fr)); gap: 24px; }
-        .card { background: var(--card-bg); border-radius: var(--radius-lg); border: 1px solid var(--border-color); padding: 24px; transition: all 0.3s ease; box-shadow: 0 1px 3px rgba(0,0,0,0.05); }
-        .card:hover { transform: translateY(-4px); box-shadow: 0 10px 25px -5px rgba(99, 102, 241, 0.1); }
-        .card-title { font-size: 1.2rem; font-weight: 700; margin-bottom: 10px; color: var(--text-main); }
-        .card-summary { color: var(--text-muted); font-size: 0.92rem; margin-bottom: 16px; }
+        .grid-3 { display: grid; grid-template-columns: repeat(auto-fit, minmax(320px, 1fr)); gap: 24px; }
+        .card { background: var(--card-bg); border-radius: var(--radius-lg); border: 1px solid var(--border-color); padding: 20px; transition: all 0.3s ease; box-shadow: 0 1px 3px rgba(0,0,0,0.05); display: flex; flex-direction: column; overflow: hidden; }
+        .card:hover { transform: translateY(-4px); box-shadow: 0 12px 30px -5px rgba(99, 102, 241, 0.15); border-color: #cbd5e1; }
+        .card-img { width: 100%; height: 180px; object-fit: cover; border-radius: var(--radius-md); margin-bottom: 14px; cursor: pointer; transition: transform 0.3s ease; }
+        .card-img:hover { transform: scale(1.02); }
+        .card-title { font-size: 1.15rem; font-weight: 700; margin-bottom: 10px; color: var(--text-main); cursor: pointer; line-height: 1.4; }
+        .card-title:hover { color: var(--primary); }
+        .card-summary { color: var(--text-muted); font-size: 0.92rem; margin-bottom: 16px; flex: 1; line-height: 1.5; }
+
+        .sort-bar { display: flex; gap: 8px; align-items: center; background: #fff; padding: 8px 12px; border-radius: 50px; border: 1px solid var(--border-color); flex-wrap: wrap; margin-bottom: 24px; }
+        .sort-btn { background: none; border: none; font-family: inherit; font-size: 0.88rem; font-weight: 700; color: var(--text-muted); padding: 6px 14px; border-radius: 50px; cursor: pointer; transition: all 0.2s; }
+        .sort-btn.active, .sort-btn:hover { background: var(--primary-light); color: var(--primary-hover); }
 
         .ai-chat-fab { position: fixed; bottom: 30px; right: 30px; width: 60px; height: 60px; border-radius: 50%; background: linear-gradient(135deg, #0ea5e9 0%, #6366f1 100%); color: #fff; display: flex; align-items: center; justify-content: center; font-size: 1.6rem; cursor: pointer; box-shadow: 0 10px 25px rgba(14, 165, 233, 0.4); z-index: 999; }
         .ai-chat-drawer { position: fixed; bottom: 100px; right: 30px; width: 400px; max-width: calc(100vw - 40px); height: 520px; background: #fff; border-radius: 20px; box-shadow: 0 20px 40px rgba(0,0,0,0.15); display: flex; flex-direction: column; z-index: 1000; overflow: hidden; border: 1px solid var(--border-color); display: none; }
@@ -86,13 +94,16 @@
 
         .modal-overlay { position: fixed; inset: 0; background: rgba(15, 23, 42, 0.6); backdrop-filter: blur(4px); display: flex; align-items: center; justify-content: center; z-index: 2000; display: none; }
         .modal-overlay.active { display: flex; }
-        .modal-card { background: #fff; width: 480px; max-width: 90%; border-radius: 20px; padding: 32px; box-shadow: 0 20px 30px -10px rgba(99, 102, 241, 0.2); }
+        .modal-card { background: #fff; width: 540px; max-width: 90%; border-radius: 20px; padding: 32px; box-shadow: 0 20px 30px -10px rgba(99, 102, 241, 0.2); max-height: 90vh; overflow-y: auto; }
         .auth-tabs { display: flex; border-bottom: 2px solid var(--border-color); margin-bottom: 24px; }
         .tab-btn { flex: 1; padding: 12px; background: none; border: none; font-weight: 700; color: var(--text-muted); cursor: pointer; }
         .tab-btn.active { color: var(--primary); border-bottom: 2px solid var(--primary); }
         .form-group { margin-bottom: 16px; }
         .form-group label { display: block; font-weight: 600; font-size: 0.88rem; margin-bottom: 6px; }
         .form-control { width: 100%; padding: 10px 14px; border: 1px solid var(--border-color); border-radius: var(--radius-md); font-family: inherit; font-size: 0.95rem; }
+
+        .comment-item { background: #f8fafc; border: 1px solid var(--border-color); border-radius: var(--radius-md); padding: 14px 16px; margin-bottom: 12px; }
+        .comment-header { display: flex; justify-content: space-between; align-items: center; margin-bottom: 6px; }
 
         .main-footer { background: var(--dark-bg); color: #94a3b8; padding: 40px 20px 20px; margin-top: auto; font-size: 0.9rem; }
     </style>
@@ -188,6 +199,54 @@
         </div>
     </div>
 
+    <!-- POST DETAIL MODAL -->
+    <div class="modal-overlay" id="detailModal">
+        <div class="modal-card" style="width: 720px;" id="detailModalCard">
+            <!-- DYNAMIC DETAIL CONTENT -->
+        </div>
+    </div>
+
+    <!-- CREATE FORUM POST MODAL -->
+    <div class="modal-overlay" id="createPostModal">
+        <div class="modal-card" style="width: 600px;">
+            <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 20px;">
+                <h3 style="font-size: 1.3rem; font-weight: 800;">Đăng Bài Tâm Sự / Hỏi Đáp</h3>
+                <button onclick="toggleCreatePostModal(false)" style="background: none; border: none; font-size: 1.5rem; cursor: pointer;">&times;</button>
+            </div>
+            <form onsubmit="submitNewForumPost(event)">
+                <div class="form-group">
+                    <label>Chủ đề thảo luận (*)</label>
+                    <select id="pCategory" class="form-control" required>
+                        <option value="Tâm sự học đường">Tâm sự học đường</option>
+                        <option value="Hỏi đáp pháp lý">Hỏi đáp pháp lý</option>
+                        <option value="Góc tư vấn phụ huynh">Góc tư vấn phụ huynh</option>
+                    </select>
+                </div>
+                <div class="form-group">
+                    <label>Tiêu đề bài viết (*)</label>
+                    <input type="text" id="pTitle" class="form-control" placeholder="Tóm tắt vấn đề của bạn..." required />
+                </div>
+                <div class="form-group">
+                    <label>Nội dung chi tiết (*)</label>
+                    <textarea id="pContent" rows="5" class="form-control" placeholder="Viết chi tiết câu chuyện..." required></textarea>
+                </div>
+                <div class="form-group">
+                    <label>URL Hình ảnh minh họa (Tùy chọn)</label>
+                    <input type="url" id="pImgUrl" class="form-control" placeholder="https://images.unsplash.com/..." />
+                </div>
+                <div class="form-group" style="display: flex; align-items: center; gap: 10px; background: #f8fafc; padding: 12px; border-radius: var(--radius-md);">
+                    <input type="checkbox" id="pIsAnon" checked style="width: 18px; height: 18px;" />
+                    <label for="pIsAnon" style="margin: 0; cursor: pointer; font-weight: 700; color: var(--primary-hover);">
+                        <i class="bi bi-incognito"></i> Đăng bài dạng Học sinh Ẩn danh (Bảo mật 100%)
+                    </label>
+                </div>
+                <button type="submit" class="btn btn-primary" style="width: 100%; padding: 12px;">
+                    <i class="bi bi-send-fill"></i> Đăng Bài Viết
+                </button>
+            </form>
+        </div>
+    </div>
+
     <!-- FOOTER -->
     <footer class="main-footer">
         <div style="max-width: 1240px; margin: 0 auto; text-align: center;">
@@ -197,14 +256,122 @@
 
     <script>
         const store = {
+            forumSort: 'popular', // popular, new, week, month
+            newsCategory: 'Tất cả',
             reports: [
                 { trackingCode: 'SS-89A12B', school: 'THPT Nguyễn Trãi', type: 'Bắt nạt mạng & Lăng mạ', desc: 'Có nhóm lập group chế giễu sau giờ học', status: 'Đã tiếp nhận & Đang xác minh', notes: 'Ban Giám Hiệu đã làm việc với GVCN lớp.' }
             ],
+            news: [
+                {
+                    id: 101,
+                    title: '5 Kỹ năng tự vệ an toàn khi đối mặt với bạo lực học đường',
+                    category: 'Kỹ năng phòng vệ',
+                    author: 'Chuyên gia An ninh Học đường',
+                    readTime: '5 phút đọc',
+                    date: '2026-08-08',
+                    likes: 128,
+                    image: 'https://images.unsplash.com/photo-1544717305-2782549b5136?auto=format&fit=crop&w=800&q=80',
+                    summary: 'Hướng dẫn chi tiết các bước thoát hiểm, giữ bình tĩnh, ứng xử thông minh và tìm kiếm trợ giúp ngay lập tức khi bị nhóm bạn đe dọa.',
+                    content: `Bắt nạt học đường không chỉ ảnh hưởng đến thể xác mà còn gây tổn thương tâm lý lâu dài. Sau đây là 5 nguyên tắc vàng giúp em tự bảo vệ bản thân:\n\n1. **Giữ khoảng cách an toàn và bình tĩnh:** Không tỏ ra hoảng sợ nhưng cũng không kích động đối phương. Thở sâu và tìm hướng di chuyển thoát ra ngoài.\n2. **Hét to và di chuyển về nơi đông người:** Di chuyển ngay về phía văn phòng giáo viên, phòng bảo vệ, hoặc khu vực căn tin đông đúc.\n3. **Không chịu đựng một mình:** Ngay sau sự việc, hãy ghi lại thời gian, địa điểm, tên những người liên quan và gửi Đơn báo cáo ẩn danh trên SafeSchool.\n4. **Lưu lại bằng chứng:** Chụp màn hình tin nhắn, tài khoản nhắn tin đe dọa trước khi chặn.\n5. **Gọi ngay hotline 111 khi khẩn cấp:** Tổng đài Quốc gia Bảo vệ Trẻ em luôn trực 24/7 sẵn sàng can thiệp.`,
+                    comments: [
+                        { author: 'Lê Hoàng Nam', isAnon: false, time: '2 giờ trước', text: 'Bài viết rất hữu ích cho các bạn học sinh cấp 2 và cấp 3!' },
+                        { author: 'Bạn đọc ẩn danh', isAnon: true, time: '4 giờ trước', text: 'Cảm ơn chuyên gia đã chia sẻ kỹ năng tự vệ này.' }
+                    ]
+                },
+                {
+                    id: 102,
+                    title: 'Nhận diện Cyberbullying (Bắt nạt trên mạng) và cách chặn đứng tức thì',
+                    category: 'Tư vấn tâm lý',
+                    author: 'ThS. Tâm lý Nguyễn Thanh Hà',
+                    readTime: '4 phút đọc',
+                    date: '2026-08-06',
+                    likes: 95,
+                    image: 'https://images.unsplash.com/photo-1516321318423-f06f85e504b3?auto=format&fit=crop&w=800&q=80',
+                    summary: 'Cách xử lý khi bị lập group antifan, bôi nhọ ảnh cá nhân hoặc nhắn tin đe dọa trên Facebook, TikTok, Zalo.',
+                    content: `Bắt nạt trên không gian mạng (Cyberbullying) có thể diễn ra 24/7 khiến học sinh căng thẳng tột độ.\n\n**Các bước hành động ngay lập tức:**\n- **Không đáp trả:** Những kẻ bắt nạt mạng thường muốn thấy sự hoảng loạn của nạn nhân. Sự im lặng và chụp chứng cứ là vũ khí tốt nhất.\n- **Sử dụng công cụ Chặn & Báo cáo (Report):** Chặn tài khoản quấy rối trên nền tảng MXH.\n- **Thông báo với Ban tư vấn nhà trường:** Sử dụng chức năng báo cáo trên website SafeSchool để nhà trường hỗ trợ làm việc với cơ quan an ninh mạng nếu cần thiết.`,
+                    comments: [
+                        { author: 'Minh Thùy', isAnon: false, time: '1 ngày trước', text: 'Em từng bị lập group bôi nhọ năm lớp 9, may nhờ thầy cô can thiệp kịp thời.' }
+                    ]
+                },
+                {
+                    id: 103,
+                    title: 'Luật Trẻ em 2016 và Quyền được bảo vệ của Học sinh trong Nhà trường',
+                    category: 'Pháp lý học đường',
+                    author: 'Luật sư Học đường Việt Nam',
+                    readTime: '6 phút đọc',
+                    date: '2026-08-02',
+                    likes: 156,
+                    image: 'https://images.unsplash.com/photo-1589829545856-d10d557cf95f?auto=format&fit=crop&w=800&q=80',
+                    summary: 'Những quy định pháp lý quan trọng mọi học sinh và phụ huynh cần biết để bảo vệ quyền lợi hợp pháp khi bị xâm hại hoặc bạo lực.',
+                    content: `Theo Điều 37 Luật Trẻ em 2016, trẻ em có quyền được bảo vệ dưới mọi hình thức để không bị bạo lực, bỏ mặc, bỏ rơi.\n\nMọi hành vi dung túng, bao che hoặc cố tình che giấu hành vi bạo lực học đường đều vi phạm quy định pháp luật. Tổng đài 111 là cơ quan được Nhà nước cấp quyền tiếp nhận và điều phối giải cứu khẩn cấp cho trẻ em toàn quốc.`,
+                    comments: []
+                }
+            ],
             posts: [
-                { id: 1, title: 'Làm sao vượt qua cảm giác sợ hãi khi bị cô lập?', category: 'Tâm sự học đường', author: 'Học sinh ẩn danh', isAnon: true, likes: 24, content: 'Mình bị nhóm bạn trong lớp ghép tội xấu rồi xúi cả lớp không chơi cùng. Mỗi ngày đến trường rất áp lực...' },
-                { id: 2, title: 'Quy định xử lý hành vi đe dọa đánh bạn học?', category: 'Hỏi đáp pháp lý', author: 'Trần Đức Anh', isAnon: false, likes: 42, content: 'Theo Luật Trẻ em 2016, học sinh cấp 3 có hành vi bạo lực tống tiền sẽ bị xử lý thế nào?' }
+                {
+                    id: 1,
+                    title: 'Làm sao vượt qua cảm giác sợ hãi khi bị cô lập?',
+                    category: 'Tâm sự học đường',
+                    author: 'Học sinh ẩn danh (Lớp 11)',
+                    isAnon: true,
+                    likes: 142,
+                    date: '2026-08-09T08:30:00',
+                    image: 'https://images.unsplash.com/photo-1529156069898-49953e39b3ac?auto=format&fit=crop&w=800&q=80',
+                    content: 'Mình bị nhóm bạn trong lớp thêu dệt chuyện sai sự thật rồi rủ cả lớp không ai nói chuyện với mình. Mỗi ngày đến trường với mình là một cơn ác mộng. Có bạn nào từng trải qua cảm giác này và vượt qua được không?',
+                    comments: [
+                        { author: 'Nguyễn Minh Tuấn', isAnon: false, time: '3 giờ trước', text: 'Chào bạn! Mình từng ở trong hoàn cảnh tương tự năm lớp 9. Bạn đừng giấu một mình nhé, hãy tâm sự với thầy cô chủ nhiệm hoặc gọi cho Tổng đài 111. Bạn không có lỗi gì cả!' },
+                        { author: 'Chuyên viên Tâm lý Minh Anh', isAnon: false, time: '2 giờ trước', text: 'Chào em. Cô lập xã hội là một dạng bắt nạt tâm lý nghiêm trọng. Em hãy thử tìm kiếm sự kết nối từ các bạn câu lạc bộ khác hoặc tham khảo dịch vụ tư vấn AI / Đơn báo cáo ẩn danh của SafeSchool nhé.' }
+                    ]
+                },
+                {
+                    id: 2,
+                    title: 'Quy định xử lý hành vi đe dọa đánh bạn học?',
+                    category: 'Hỏi đáp pháp lý',
+                    author: 'Trần Đức Anh',
+                    isAnon: false,
+                    likes: 89,
+                    date: '2026-08-08T14:15:00',
+                    image: 'https://images.unsplash.com/photo-1573496359142-b8d87734a5a2?auto=format&fit=crop&w=800&q=80',
+                    content: 'Em muốn hỏi theo Luật Trẻ em 2016 và Bộ luật Hình sự, những học sinh cấp 3 có hành vi bạo lực học đường tống tiền hoặc gây thương tích sẽ bị xử lý như thế nào?',
+                    comments: [
+                        { author: 'Luật sư Học đường', isAnon: false, time: '1 ngày trước', text: 'Căn cứ Nghị định 80/2017/NĐ-CP và Luật Trẻ em 2016, người có hành vi bạo lực học đường tùy mức độ có thể bị xử lý kỷ luật buột đình chỉ học, xử phạt hành chính hoặc truy cứu trách nhiệm hình sự nếu từ đủ 14 tuổi trở lên.' }
+                    ]
+                },
+                {
+                    id: 3,
+                    title: 'Bí quyết giúp con mở lòng khi bị bắt nạt (Dành cho Phụ huynh)',
+                    category: 'Góc tư vấn phụ huynh',
+                    author: 'Phụ huynh giấu tên',
+                    isAnon: true,
+                    likes: 215,
+                    date: '2026-08-04T10:00:00',
+                    image: 'https://images.unsplash.com/photo-1577896851231-70ef18881754?auto=format&fit=crop&w=800&q=80',
+                    content: 'Là cha mẹ, thấy con đi học về lầm lì, bỏ ăn và thương tích nhẹ trên tay nhưng hỏi con không nói. Sau đây là bài chia sẻ kinh nghiệm gia đình tôi đã kiên nhẫn đồng hành cùng con vượt qua.',
+                    comments: [
+                        { author: 'Mẹ Bé Bông', isAnon: true, time: '3 ngày trước', text: 'Cảm ơn bài viết rất xúc động và đúng tâm lý phụ huynh!' }
+                    ]
+                }
             ]
         };
+
+        function getFilteredAndSortedPosts() {
+            let list = [...store.posts];
+            const sort = store.forumSort;
+            const now = new Date();
+
+            if (sort === 'popular') {
+                list.sort((a, b) => b.likes - a.likes);
+            } else if (sort === 'new') {
+                list.sort((a, b) => new Date(b.date) - new Date(a.date));
+            } else if (sort === 'week') {
+                const oneWeekAgo = new Date(now.getTime() - 7 * 24 * 60 * 60 * 1000);
+                list = list.filter(p => new Date(p.date) >= oneWeekAgo).sort((a, b) => b.likes - a.likes);
+            } else if (sort === 'month') {
+                const oneMonthAgo = new Date(now.getTime() - 30 * 24 * 60 * 60 * 1000);
+                list = list.filter(p => new Date(p.date) >= oneMonthAgo).sort((a, b) => b.likes - a.likes);
+            }
+            return list;
+        }
 
         function showPage(pageId) {
             document.querySelectorAll('.nav-links button').forEach(b => b.classList.remove('active'));
@@ -213,6 +380,25 @@
 
             const content = document.getElementById('mainAppContent');
             if (pageId === 'home') {
+                const popularArticles = [...store.news].sort((a,b) => b.likes - a.likes).slice(0, 3);
+                const articlesHtml = popularArticles.map(a => `
+                    <div class="card">
+                        <img src="${a.image}" class="card-img" onclick="openDetailModal('news', ${a.id})" alt="${a.title}" />
+                        <div style="margin-bottom: 8px; display: flex; justify-content: space-between; align-items: center;">
+                            <span class="badge badge-success">${a.category}</span>
+                            <button class="btn btn-secondary" style="padding: 4px 10px; font-size: 0.8rem;" onclick="likeItem('news', ${a.id}, this)">
+                                <i class="bi bi-heart-fill" style="color: #ef4444;"></i> <span class="like-cnt">${a.likes}</span>
+                            </button>
+                        </div>
+                        <h3 class="card-title" onclick="openDetailModal('news', ${a.id})">${a.title}</h3>
+                        <p class="card-summary">${a.summary}</p>
+                        <div style="border-top: 1px solid var(--border-color); padding-top: 12px; display: flex; justify-content: space-between; align-items: center;">
+                            <small style="color: var(--text-muted);"><i class="bi bi-clock"></i> ${a.readTime}</small>
+                            <button class="btn btn-secondary" style="padding: 6px 14px; font-size: 0.85rem;" onclick="openDetailModal('news', ${a.id})">Đọc tiếp &rarr;</button>
+                        </div>
+                    </div>
+                `).join('');
+
                 content.innerHTML = `
                     <section class="hero-section">
                         <span class="badge badge-success" style="margin-bottom: 12px;"><i class="bi bi-shield-check"></i> Bảo Mật Danh Tính 100% • Tư Vấn 24/7</span>
@@ -235,66 +421,92 @@
                         </div>
                     </section>
 
-                    <h2 style="font-size: 1.6rem; font-weight: 800; margin-bottom: 20px;">Cẩm Nang Kỹ Năng Tự Vệ Học Đường</h2>
-                    <div class="grid-3">
-                        <div class="card">
-                            <span class="badge badge-success" style="margin-bottom: 8px;">Kỹ năng phòng vệ</span>
-                            <h3 class="card-title">5 Kỹ năng tự vệ an toàn khi đối mặt với bạo lực học đường</h3>
-                            <p class="card-summary">Các bước giữ bình tĩnh, di chuyển về nơi đông người và gọi ngay hotline 111 khi bị đe dọa.</p>
-                        </div>
-                        <div class="card">
-                            <span class="badge badge-success" style="margin-bottom: 8px;">Tư vấn tâm lý</span>
-                            <h3 class="card-title">Nhận diện Cyberbullying và cách chặn đứng tức thì</h3>
-                            <p class="card-summary">Xử lý khi bị lập group antifan, bôi nhọ ảnh cá nhân hoặc nhắn tin đe dọa trên MXH.</p>
-                        </div>
-                        <div class="card">
-                            <span class="badge badge-success" style="margin-bottom: 8px;">Pháp lý học đường</span>
-                            <h3 class="card-title">Luật Trẻ em 2016 và Quyền được bảo vệ của Học sinh</h3>
-                            <p class="card-summary">Quy định pháp luật quan trọng về quyền được bảo vệ an toàn của học sinh trong nhà trường.</p>
-                        </div>
+                    <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 20px;">
+                        <h2 style="font-size: 1.6rem; font-weight: 800;">Cẩm Nang Kỹ Năng Tự Vệ Học Đường</h2>
+                        <button class="btn btn-secondary" onclick="showPage('news')">Xem tất cả bài viết <i class="bi bi-arrow-right"></i></button>
                     </div>
+                    <div class="grid-3">${articlesHtml}</div>
                 `;
             } else if (pageId === 'news') {
-                content.innerHTML = `
-                    <h1 style="font-size: 2.2rem; font-weight: 800; margin-bottom: 20px;">Tin Tức & Kỹ Năng Bảo Vệ Học Đường</h1>
-                    <div class="grid-3">
-                        <div class="card">
-                            <span class="badge badge-success" style="margin-bottom: 8px;">Kỹ năng phòng vệ</span>
-                            <h3 class="card-title">5 Kỹ năng tự vệ an toàn khi đối mặt với bạo lực</h3>
-                            <p class="card-summary">Giữ khoảng cách, hô to thoát hiểm và gửi báo cáo ẩn danh ngay trên SafeSchool.</p>
+                const articlesHtml = store.news.map(a => `
+                    <div class="card">
+                        <img src="${a.image}" class="card-img" onclick="openDetailModal('news', ${a.id})" alt="${a.title}" />
+                        <div style="margin-bottom: 8px; display: flex; justify-content: space-between; align-items: center;">
+                            <span class="badge badge-success">${a.category}</span>
+                            <button class="btn btn-secondary" style="padding: 4px 10px; font-size: 0.8rem;" onclick="likeItem('news', ${a.id}, this)">
+                                <i class="bi bi-heart-fill" style="color: #ef4444;"></i> <span class="like-cnt">${a.likes}</span>
+                            </button>
                         </div>
-                        <div class="card">
-                            <span class="badge badge-success" style="margin-bottom: 8px;">Tư vấn tâm lý</span>
-                            <h3 class="card-title">Ứng phó bắt nạt trên không gian mạng (Cyberbullying)</h3>
-                            <p class="card-summary">Chụp màn hình làm chứng cứ, chặn tài khoản quấy rối và báo cáo Ban tư vấn nhà trường.</p>
+                        <h3 class="card-title" onclick="openDetailModal('news', ${a.id})">${a.title}</h3>
+                        <p class="card-summary">${a.summary}</p>
+                        <div style="border-top: 1px solid var(--border-color); padding-top: 12px; display: flex; justify-content: space-between; align-items: center;">
+                            <small style="color: var(--text-muted);"><i class="bi bi-person"></i> ${a.author}</small>
+                            <button class="btn btn-secondary" style="padding: 6px 14px; font-size: 0.85rem;" onclick="openDetailModal('news', ${a.id})">Đọc bài chi tiết &rarr;</button>
                         </div>
-                        <div class="card">
-                            <span class="badge badge-success" style="margin-bottom: 8px;">Pháp lý</span>
-                            <h3 class="card-title">Trách nhiệm pháp lý hành vi bạo lực học đường</h3>
-                            <p class="card-summary">Quy định kỷ luật đình chỉ học và xử lý hình sự đối với hành vi hành hung tống tiền.</p>
-                        </div>
-                    </div>
-                `;
-            } else if (pageId === 'forum') {
-                const postsHtml = store.posts.map(p => `
-                    <div class="card" style="margin-bottom: 16px;">
-                        <div style="display: flex; justify-content: space-between; margin-bottom: 8px;">
-                            <span class="badge ${p.isAnon ? 'badge-anon' : 'badge-success'}">${p.author}</span>
-                            <span class="badge badge-emergency">${p.category}</span>
-                        </div>
-                        <h3 style="font-size: 1.2rem; margin-bottom: 8px;">${p.title}</h3>
-                        <p style="color: var(--text-muted); margin-bottom: 16px;">${p.content}</p>
-                        <button class="btn btn-secondary" onclick="this.querySelector('.c').textContent=parseInt(this.querySelector('.c').textContent)+1">
-                            <i class="bi bi-heart-fill" style="color:#ef4444;"></i> <span class="c">${p.likes}</span> Thích
-                        </button>
                     </div>
                 `).join('');
+
                 content.innerHTML = `
-                    <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 24px;">
-                        <h1 style="font-size: 2.2rem; font-weight: 800;"><i class="bi bi-chat-heart-fill" style="color: var(--primary);"></i> Diễn Đàn Tâm Sự Học Đường</h1>
-                        <button class="btn btn-primary" onclick="alert('Vui lòng điền form đăng bài ẩn danh!')"><i class="bi bi-pencil-square"></i> Đăng Bài Tâm Sự</button>
+                    <div style="margin-bottom: 24px;">
+                        <h1 style="font-size: 2.2rem; font-weight: 800; margin-bottom: 8px;">Cẩm Nang & Kỹ Năng Bảo Vệ Học Đường</h1>
+                        <p style="color: var(--text-muted); font-size: 1.05rem;">Tổng hợp bài viết hướng dẫn ứng phó bạo lực, tư vấn giải tỏa stress và kiến thức pháp lý bảo vệ bản thân.</p>
                     </div>
-                    <div>${postsHtml}</div>
+                    <div class="grid-3">${articlesHtml}</div>
+                `;
+            } else if (pageId === 'forum') {
+                const posts = getFilteredAndSortedPosts();
+                const postsHtml = posts.map(p => `
+                    <div class="card" style="margin-bottom: 20px;">
+                        <div style="display: flex; gap: 16px; flex-wrap: wrap;">
+                            ${p.image ? `<img src="${p.image}" class="card-img" style="width: 220px; height: 140px; margin-bottom: 0;" onclick="openDetailModal('forum', ${p.id})" />` : ''}
+                            <div style="flex: 1; min-width: 260px;">
+                                <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 8px;">
+                                    <span class="badge ${p.isAnon ? 'badge-anon' : 'badge-success'}"><i class="bi ${p.isAnon ? 'bi-incognito' : 'bi-person-check-fill'}"></i> ${p.author}</span>
+                                    <span class="badge badge-emergency" style="background: var(--primary-light); color: var(--primary-hover);">${p.category}</span>
+                                </div>
+                                <h3 class="card-title" onclick="openDetailModal('forum', ${p.id})">${p.title}</h3>
+                                <p class="card-summary" style="display: -webkit-box; -webkit-line-clamp: 2; -webkit-box-orient: vertical; overflow: hidden;">${p.content}</p>
+                                <div style="display: flex; justify-content: space-between; align-items: center; border-top: 1px solid var(--border-color); padding-top: 12px; margin-top: 12px;">
+                                    <div style="display: flex; gap: 12px;">
+                                        <button class="btn btn-secondary" style="padding: 6px 14px; font-size: 0.88rem;" onclick="likeItem('forum', ${p.id}, this)">
+                                            <i class="bi bi-heart-fill" style="color: #ef4444;"></i> <span class="like-cnt">${p.likes}</span> Thích
+                                        </button>
+                                        <button class="btn btn-secondary" style="padding: 6px 14px; font-size: 0.88rem;" onclick="openDetailModal('forum', ${p.id})">
+                                            <i class="bi bi-chat-dots-fill"></i> ${p.comments.length} Bình luận
+                                        </button>
+                                    </div>
+                                    <button class="btn btn-secondary" style="padding: 6px 14px; font-size: 0.88rem;" onclick="openDetailModal('forum', ${p.id})">Xem chi tiết &rarr;</button>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                `).join('');
+
+                content.innerHTML = `
+                    <div style="display: flex; justify-content: space-between; align-items: flex-start; margin-bottom: 24px; flex-wrap: wrap; gap: 16px;">
+                        <div>
+                            <h1 style="font-size: 2.2rem; font-weight: 800; color: var(--text-main); margin-bottom: 6px;">
+                                <i class="bi bi-chat-heart-fill" style="color: var(--primary);"></i> Diễn Đàn Tâm Sự Học Đường
+                            </h1>
+                            <p style="color: var(--text-muted); font-size: 1.05rem;">Không gian an toàn chia sẻ tâm sự, hỏi đáp kinh nghiệm vượt qua khó khăn & lắng nghe lời khuyên.</p>
+                        </div>
+                        <button class="btn btn-primary" onclick="toggleCreatePostModal(true)" style="padding: 12px 24px; font-size: 1rem;">
+                            <i class="bi bi-pencil-square"></i> Đăng Bài Tâm Sự (Có Ẩn Danh)
+                        </button>
+                    </div>
+
+                    <!-- SORTING TOOLBAR -->
+                    <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 24px; flex-wrap: wrap; gap: 12px;">
+                        <div class="sort-bar">
+                            <span style="font-size: 0.85rem; font-weight: 700; color: var(--text-muted); margin-right: 4px;"><i class="bi bi-funnel-fill"></i> Sắp xếp bài đăng:</span>
+                            <button class="sort-btn ${store.forumSort === 'popular' ? 'active' : ''}" onclick="setForumSort('popular')">🔥 Nổi bật nhất (Nhiều Like)</button>
+                            <button class="sort-btn ${store.forumSort === 'new' ? 'active' : ''}" onclick="setForumSort('new')">⏱️ Mới nhất</button>
+                            <button class="sort-btn ${store.forumSort === 'week' ? 'active' : ''}" onclick="setForumSort('week')">📅 Bài tuần này</button>
+                            <button class="sort-btn ${store.forumSort === 'month' ? 'active' : ''}" onclick="setForumSort('month')">📆 Bài tháng này</button>
+                        </div>
+                    </div>
+
+                    <div>${postsHtml.length > 0 ? postsHtml : '<div class="card" style="text-align:center; padding: 40px;">Chưa có bài viết nào trong mốc thời gian này.</div>'}</div>
                 `;
             } else if (pageId === 'report') {
                 content.innerHTML = `
@@ -334,6 +546,145 @@
                 `;
                 doTrack();
             }
+        }
+
+        function setForumSort(sortType) {
+            store.forumSort = sortType;
+            showPage('forum');
+        }
+
+        function likeItem(type, id, btnEl) {
+            const list = type === 'news' ? store.news : store.posts;
+            const item = list.find(x => x.id === id);
+            if (item) {
+                item.likes++;
+                const countSpan = btnEl.querySelector('.like-cnt');
+                if (countSpan) countSpan.textContent = item.likes;
+                btnEl.style.color = '#ef4444';
+            }
+        }
+
+        function openDetailModal(type, id) {
+            const list = type === 'news' ? store.news : store.posts;
+            const item = list.find(x => x.id === id);
+            if (!item) return;
+
+            const modalContent = document.getElementById('detailModalCard');
+            const commentsHtml = item.comments.map(c => `
+                <div class="comment-item">
+                    <div class="comment-header">
+                        <span class="badge ${c.isAnon ? 'badge-anon' : 'badge-success'}">${c.author}</span>
+                        <small style="color: var(--text-muted);">${c.time}</small>
+                    </div>
+                    <p style="font-size: 0.92rem; color: var(--text-main); margin-top: 4px;">${c.text}</p>
+                </div>
+            `).join('');
+
+            modalContent.innerHTML = `
+                <div style="display: flex; justify-content: space-between; align-items: flex-start; margin-bottom: 16px;">
+                    <div>
+                        <span class="badge badge-success">${item.category}</span>
+                        <h2 style="font-size: 1.6rem; font-weight: 800; margin-top: 6px; color: var(--text-main);">${item.title}</h2>
+                    </div>
+                    <button onclick="toggleDetailModal(false)" style="background: none; border: none; font-size: 1.6rem; cursor: pointer;">&times;</button>
+                </div>
+
+                <div style="display: flex; gap: 16px; color: var(--text-muted); font-size: 0.85rem; margin-bottom: 16px; border-bottom: 1px solid var(--border-color); padding-bottom: 12px;">
+                    <span><i class="bi bi-person"></i> ${item.author}</span>
+                    <span><i class="bi bi-heart-fill" style="color:#ef4444;"></i> ${item.likes} Lượt thích</span>
+                    <span><i class="bi bi-chat-dots-fill"></i> ${item.comments.length} Bình luận</span>
+                </div>
+
+                ${item.image ? `<img src="${item.image}" style="width: 100%; max-height: 320px; object-fit: cover; border-radius: var(--radius-md); margin-bottom: 20px;" />` : ''}
+
+                <div style="font-size: 1.02rem; line-height: 1.7; color: #334155; white-space: pre-line; margin-bottom: 24px;">
+                    ${item.content}
+                </div>
+
+                <div style="display: flex; justify-content: space-between; align-items: center; border-top: 1px solid var(--border-color); padding-top: 16px; margin-bottom: 24px;">
+                    <button class="btn btn-secondary" onclick="likeItem('${type}', ${item.id}, this); document.getElementById('modalLikeCnt').textContent = ${item.likes};">
+                        <i class="bi bi-heart-fill" style="color: #ef4444;"></i> Thích bài viết (<span id="modalLikeCnt">${item.likes}</span>)
+                    </button>
+                    <button class="btn btn-danger" onclick="showPage('report'); toggleDetailModal(false);"><i class="bi bi-shield-lock-fill"></i> Báo báo khẩn cấp</button>
+                </div>
+
+                <!-- COMMENTS SECTION -->
+                <div style="border-top: 2px solid var(--border-color); padding-top: 20px;">
+                    <h3 style="font-size: 1.15rem; font-weight: 800; margin-bottom: 16px;"><i class="bi bi-chat-left-text-fill" style="color: var(--primary);"></i> Thảo Luận & Bình Luận (${item.comments.length})</h3>
+                    
+                    <form onsubmit="submitNewComment(event, '${type}', ${item.id})" style="margin-bottom: 20px; background: #f8fafc; padding: 16px; border-radius: var(--radius-md); border: 1px solid var(--border-color);">
+                        <div class="form-group" style="margin-bottom: 10px;">
+                            <textarea id="cmtInputText" rows="3" class="form-control" placeholder="Viết bình luận động viên hoặc chia sẻ lời khuyên..." required></textarea>
+                        </div>
+                        <div style="display: flex; justify-content: space-between; align-items: center;">
+                            <label style="font-size: 0.88rem; font-weight: 600; cursor: pointer;">
+                                <input type="checkbox" id="cmtIsAnon" checked style="width: 16px; height: 16px;" /> Bình luận ẩn danh
+                            </label>
+                            <button type="submit" class="btn btn-primary" style="padding: 8px 18px;"><i class="bi bi-send-fill"></i> Gửi bình luận</button>
+                        </div>
+                    </form>
+
+                    <div id="modalCmtList">
+                        ${commentsHtml.length > 0 ? commentsHtml : '<div style="color: var(--text-muted); text-align: center; padding: 16px;">Chưa có bình luận nào. Hãy gửi lời động viên đầu tiên!</div>'}
+                    </div>
+                </div>
+            `;
+
+            toggleDetailModal(true);
+        }
+
+        function submitNewComment(e, type, id) {
+            e.preventDefault();
+            const text = document.getElementById('cmtInputText').value.trim();
+            const isAnon = document.getElementById('cmtIsAnon').checked;
+            if (!text) return;
+
+            const list = type === 'news' ? store.news : store.posts;
+            const item = list.find(x => x.id === id);
+            if (item) {
+                const newCmt = {
+                    author: isAnon ? 'Bạn đọc ẩn danh' : 'Học sinh SafeSchool',
+                    isAnon: isAnon,
+                    time: 'Vừa xong',
+                    text: text
+                };
+                item.comments.unshift(newCmt);
+                openDetailModal(type, id); // Refresh detail modal
+            }
+        }
+
+        function toggleDetailModal(show) {
+            document.getElementById('detailModal').classList.toggle('active', show);
+        }
+
+        function toggleCreatePostModal(show) {
+            document.getElementById('createPostModal').classList.toggle('active', show);
+        }
+
+        function submitNewForumPost(e) {
+            e.preventDefault();
+            const category = document.getElementById('pCategory').value;
+            const title = document.getElementById('pTitle').value;
+            const content = document.getElementById('pContent').value;
+            const imgUrl = document.getElementById('pImgUrl').value || 'https://images.unsplash.com/photo-1529156069898-49953e39b3ac?auto=format&fit=crop&w=800&q=80';
+            const isAnon = document.getElementById('pIsAnon').checked;
+
+            const newPost = {
+                id: Date.now(),
+                title: title,
+                category: category,
+                author: isAnon ? 'Học sinh ẩn danh' : 'Học sinh SafeSchool',
+                isAnon: isAnon,
+                likes: 1,
+                date: new Date().toISOString(),
+                image: imgUrl,
+                content: content,
+                comments: []
+            };
+
+            store.posts.unshift(newPost);
+            toggleCreatePostModal(false);
+            showPage('forum');
         }
 
         function submitReport(e) {
