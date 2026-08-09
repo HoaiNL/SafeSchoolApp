@@ -283,7 +283,7 @@
                         <div style="font-weight: 700; font-size: 0.95rem; margin-top: 6px; color: var(--text-main);">
                             Nhấp vào đây để chọn ảnh từ Máy tính / Điện thoại
                         </div>
-                        <small style="color: var(--text-muted);">Hỗ trợ định dạng PNG, JPG, JPEG, GIF, WebP (Tối đa 10MB)</small>
+                        <small style="color: var(--text-muted);">Hỗ trợ định dạng PNG, JPG, JPEG, GIF, WebP (Tự động nén tối ưu)</small>
                         <input type="file" id="pImgFile" accept="image/*" style="display: none;" onchange="handleImageUpload(event, 'pPreview', 'pPreviewBox')" />
                     </div>
                     
@@ -337,8 +337,26 @@
             { id: 12, name: 'Trần Gia Huy', username: 'giahuy', email: 'huy.tg@gmail.com', phone: '0955667788', role: 'User', school: 'THPT Nguyễn Trãi', avatar: 'https://images.unsplash.com/photo-1539571696357-5a69c17a67c6?auto=format&fit=crop&w=200&q=80' }
         ];
 
+        // Safe LocalStorage setter helper preventing QuotaExceededError crashes
+        function safeLocalStorageSet(key, value) {
+            try {
+                localStorage.setItem(key, typeof value === 'string' ? value : JSON.stringify(value));
+            } catch (err) {
+                console.warn('LocalStorage quota limit reached, maintaining state in memory.', err);
+            }
+        }
+
+        function safeGetUsersDB() {
+            try {
+                const stored = localStorage.getItem('safeschool_users_db');
+                return stored ? JSON.parse(stored) : defaultUsers;
+            } catch(e) {
+                return defaultUsers;
+            }
+        }
+
         const store = {
-            users: JSON.parse(localStorage.getItem('safeschool_users_db')) || defaultUsers,
+            users: safeGetUsersDB(),
             currentUser: JSON.parse(localStorage.getItem('safeschool_user')) || null,
             forumSort: 'popular', // popular, new, week, month
             commentSort: 'relevant', // relevant, newest, hot
@@ -474,33 +492,63 @@
         };
 
         function saveUsersDB() {
-            localStorage.setItem('safeschool_users_db', JSON.stringify(store.users));
+            safeLocalStorageSet('safeschool_users_db', store.users);
         }
 
-        // HANDLE AVATAR FILE UPLOAD DIRECTLY FROM COMPUTER
+        // IMAGE COMPRESSOR FUNCTION: Resizes & Compresses images to lightweight JPEG Base64
+        function compressImageFile(file, maxWidth, maxHeight, quality, callback) {
+            const reader = new FileReader();
+            reader.onload = function(e) {
+                const img = new Image();
+                img.onload = function() {
+                    let width = img.width;
+                    let height = img.height;
+
+                    if (width > height) {
+                        if (width > maxWidth) {
+                            height = Math.round((height * maxWidth) / width);
+                            width = maxWidth;
+                        }
+                    } else {
+                        if (height > maxHeight) {
+                            width = Math.round((width * maxHeight) / height);
+                            height = maxHeight;
+                        }
+                    }
+
+                    const canvas = document.createElement('canvas');
+                    canvas.width = width;
+                    canvas.height = height;
+                    const ctx = canvas.getContext('2d');
+                    ctx.drawImage(img, 0, 0, width, height);
+
+                    const compressedBase64 = canvas.toDataURL('image/jpeg', quality);
+                    callback(compressedBase64);
+                };
+                img.src = e.target.result;
+            };
+            reader.readAsDataURL(file);
+        }
+
+        // HANDLE AVATAR FILE UPLOAD WITH AUTOMATIC CANVAS COMPRESSION (~20KB)
         function handleAvatarUpload(event) {
             const file = event.target.files[0];
             if (file && store.currentUser) {
-                const reader = new FileReader();
-                reader.onload = function(e) {
-                    const newAvatarBase64 = e.target.result;
-                    
-                    // Update current user
-                    store.currentUser.avatar = newAvatarBase64;
-                    localStorage.setItem('safeschool_user', JSON.stringify(store.currentUser));
+                // Compress avatar to max 250x250 pixels at 0.85 quality (~20KB)
+                compressImageFile(file, 250, 250, 0.85, function(compressedBase64) {
+                    store.currentUser.avatar = compressedBase64;
+                    safeLocalStorageSet('safeschool_user', store.currentUser);
 
-                    // Update user in users DB
                     const target = store.users.find(u => u.id === store.currentUser.id || u.username === store.currentUser.username);
                     if (target) {
-                        target.avatar = newAvatarBase64;
+                        target.avatar = compressedBase64;
                         saveUsersDB();
                     }
 
                     updateNavbarAuthUI();
                     showPage('profile');
-                    alert('🎉 Đã cập nhật ảnh đại diện Avatar mới thành công!');
-                };
-                reader.readAsDataURL(file);
+                    alert('🎉 Đã cập nhật ảnh đại diện Avatar mới thành công! (Ảnh đã được nén tối ưu bộ nhớ)');
+                });
             }
         }
 
@@ -534,7 +582,7 @@
             }
 
             store.currentUser = matchedUser;
-            localStorage.setItem('safeschool_user', JSON.stringify(matchedUser));
+            safeLocalStorageSet('safeschool_user', matchedUser);
             updateNavbarAuthUI();
             toggleAuthModal(false);
             
@@ -551,7 +599,7 @@
                 // If currently logged in user is promoted/demoted, update state
                 if (store.currentUser && store.currentUser.id === userId) {
                     store.currentUser.role = newRole;
-                    localStorage.setItem('safeschool_user', JSON.stringify(store.currentUser));
+                    safeLocalStorageSet('safeschool_user', store.currentUser);
                 }
 
                 alert(`🎉 Đã nâng/thay đổi quyền của [${target.name}] thành [${newRole.toUpperCase()}] thành công!`);
@@ -627,17 +675,16 @@
         function handleImageUpload(event, imgPreviewId, previewBoxId) {
             const file = event.target.files[0];
             if (file) {
-                const reader = new FileReader();
-                reader.onload = function(e) {
-                    uploadedImageBase64 = e.target.result;
+                // Compress uploaded forum post / report image to max 800x800 px
+                compressImageFile(file, 800, 800, 0.8, function(compressedBase64) {
+                    uploadedImageBase64 = compressedBase64;
                     const imgEl = document.getElementById(imgPreviewId);
                     const boxEl = document.getElementById(previewBoxId);
                     if (imgEl && boxEl) {
                         imgEl.src = uploadedImageBase64;
                         boxEl.style.display = 'block';
                     }
-                };
-                reader.readAsDataURL(file);
+                });
             }
         }
 
