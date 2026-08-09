@@ -199,7 +199,7 @@
         </div>
     </div>
 
-    <!-- POST DETAIL MODAL (WIDE & WIDE-SCREEN OPTIMIZED) -->
+    <!-- POST DETAIL MODAL -->
     <div class="modal-overlay" id="detailModal">
         <div class="modal-card" id="detailModalCard">
             <!-- DYNAMIC DETAIL CONTENT -->
@@ -558,9 +558,22 @@
             const item = list.find(x => x.id === id);
             if (item) {
                 item.likes++;
-                const countSpan = btnEl.querySelector('.like-cnt');
-                if (countSpan) countSpan.textContent = item.likes;
-                btnEl.style.color = '#ef4444';
+                
+                // Update counter inside clicked button if present
+                if (btnEl) {
+                    const countSpan = btnEl.querySelector('.like-cnt');
+                    if (countSpan) countSpan.textContent = item.likes;
+                    btnEl.style.color = '#ef4444';
+                    btnEl.style.borderColor = '#ef4444';
+                }
+
+                // Update counter in modal header metadata
+                const modalMeta = document.getElementById('modalMetaLikeCnt');
+                if (modalMeta) modalMeta.textContent = item.likes;
+
+                // Update counter in modal action button
+                const modalBtnCnt = document.getElementById('modalLikeCnt');
+                if (modalBtnCnt) modalBtnCnt.textContent = item.likes;
             }
         }
 
@@ -591,7 +604,7 @@
 
                 <div style="display: flex; gap: 20px; color: var(--text-muted); font-size: 0.9rem; margin-bottom: 20px; border-bottom: 1px solid var(--border-color); padding-bottom: 14px;">
                     <span><i class="bi bi-person-fill"></i> Tác giả: ${item.author}</span>
-                    <span><i class="bi bi-heart-fill" style="color:#ef4444;"></i> ${item.likes} Lượt thích</span>
+                    <span><i class="bi bi-heart-fill" style="color:#ef4444;"></i> <span id="modalMetaLikeCnt">${item.likes}</span> Lượt thích</span>
                     <span><i class="bi bi-chat-dots-fill"></i> ${item.comments.length} Bình luận</span>
                 </div>
 
@@ -602,8 +615,8 @@
                 </div>
 
                 <div style="display: flex; justify-content: space-between; align-items: center; border-top: 1px solid var(--border-color); padding-top: 20px; margin-bottom: 32px; flex-wrap: wrap; gap: 12px;">
-                    <button class="btn btn-secondary" style="padding: 12px 24px; font-size: 1rem;" onclick="likeItem('${type}', ${item.id}, this); document.getElementById('modalLikeCnt').textContent = ${item.likes};">
-                        <i class="bi bi-heart-fill" style="color: #ef4444;"></i> Thích bài viết (<span id="modalLikeCnt">${item.likes}</span>)
+                    <button class="btn btn-secondary" style="padding: 12px 24px; font-size: 1rem;" onclick="likeItem('${type}', ${item.id}, this)">
+                        <i class="bi bi-heart-fill" style="color: #ef4444;"></i> Thích bài viết ( <span id="modalLikeCnt" class="like-cnt">${item.likes}</span> )
                     </button>
                     <button class="btn btn-danger" style="padding: 12px 24px; font-size: 1rem;" onclick="showPage('report'); toggleDetailModal(false);"><i class="bi bi-shield-lock-fill"></i> Báo báo khẩn cấp</button>
                 </div>
@@ -755,7 +768,7 @@
             if (lower.includes('đánh') || lower.includes('bạo lực') || lower.includes('đe dọa') || lower.includes('tống tiền')) {
                 reply = "🛡️ **CẢNH BÁO NGUY HIỂM KHẨN CẤP!**\n1. Di chuyển ngay về phía văn phòng thầy cô, phòng bảo vệ.\n2. Gọi ngay hotline **111** (Bảo vệ Trẻ em 24/7) hoặc **113** (Cảnh sát).\n3. Bấm 'Gửi Báo Cáo Ẩn Danh' trên SafeSchool để Ban Giám Hiệu can thiệp xử lý!";
             } else if (lower.includes('cô lập') || lower.includes('buồn') || lower.includes('sợ')) {
-                reply = "🤝 **SafeSchool luôn ở bên em!**\nCảm giác bị cô lập rất đau đớn, nhưng em không hề làm gì sai cả. Em có thể viết bài chia sẻ ẩn danh trên Diễn Đàn SafeSchool để nhận lời khuyên!";
+                reply = "🤝 **SafeSchool luôn ở bên em!**\nCảm giác bị cô lập rất đau đross, nhưng em không hề làm gì sai cả. Em có thể viết bài chia sẻ ẩn danh trên Diễn Đàn SafeSchool để nhận lời khuyên!";
             }
 
             setTimeout(() => {
