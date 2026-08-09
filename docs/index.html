@@ -1,0 +1,429 @@
+<!DOCTYPE html>
+<html lang="vi">
+<head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>SafeSchool - Nền Tảng Hỗ Trợ & Báo Cáo Bắt Nạt Học Đường Ẩn Danh</title>
+    
+    <!-- Google Fonts & Bootstrap Icons -->
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@400;500;600;700;800&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.11.3/font/bootstrap-icons.min.css">
+    
+    <style>
+        :root {
+            --primary: #6366f1;
+            --primary-hover: #4f46e5;
+            --primary-light: #e0e7ff;
+            --secondary: #0ea5e9;
+            --emerald: #10b981;
+            --emerald-light: #d1fae5;
+            --rose: #f43f5e;
+            --rose-light: #ffe4e6;
+            --dark-bg: #0f172a;
+            --card-bg: #ffffff;
+            --text-main: #1e293b;
+            --text-muted: #64748b;
+            --border-color: #e2e8f0;
+            --glass-bg: rgba(255, 255, 255, 0.9);
+            --radius-lg: 16px;
+            --radius-md: 12px;
+            --font-family: 'Plus Jakarta Sans', system-ui, sans-serif;
+        }
+
+        * { box-sizing: border-box; margin: 0; padding: 0; }
+        body { font-family: var(--font-family); background: linear-gradient(135deg, #f8fafc 0%, #f1f5f9 100%); color: var(--text-main); line-height: 1.6; min-height: 100vh; display: flex; flex-direction: column; }
+        a { color: var(--primary); text-decoration: none; transition: all 0.2s ease; }
+        a:hover { color: var(--primary-hover); }
+
+        .emergency-top-bar { background: linear-gradient(90deg, #991b1b 0%, #dc2626 50%, #b91c1c 100%); color: #fff; padding: 8px 16px; font-size: 0.88rem; font-weight: 600; display: flex; justify-content: space-between; align-items: center; position: sticky; top: 0; z-index: 1050; flex-wrap: wrap; gap: 8px; }
+        .hotline-badge { background: rgba(255,255,255,0.2); backdrop-filter: blur(4px); padding: 4px 12px; border-radius: 50px; color: #fff; display: inline-flex; align-items: center; gap: 6px; font-weight: 700; border: 1px solid rgba(255,255,255,0.3); }
+        .hotline-badge:hover { background: #fff; color: #dc2626; }
+        .pulse-dot { width: 8px; height: 8px; background-color: #4ade80; border-radius: 50%; animation: pulse 1.5s infinite; }
+        @keyframes pulse { 0% { transform: scale(0.95); box-shadow: 0 0 0 0 rgba(74, 222, 128, 0.7); } 70% { transform: scale(1.1); box-shadow: 0 0 0 8px rgba(74, 222, 128, 0); } 100% { transform: scale(0.95); box-shadow: 0 0 0 0 rgba(74, 222, 128, 0); } }
+
+        .main-header { background: var(--glass-bg); backdrop-filter: blur(12px); border-bottom: 1px solid var(--border-color); position: sticky; top: 37px; z-index: 1000; padding: 12px 24px; }
+        .navbar-container { max-width: 1240px; margin: 0 auto; display: flex; justify-content: space-between; align-items: center; }
+        .brand-logo { display: flex; align-items: center; gap: 10px; font-size: 1.4rem; font-weight: 800; color: var(--primary-hover); }
+        .nav-links { display: flex; gap: 20px; list-style: none; align-items: center; }
+        .nav-links button { background: none; border: none; font-family: inherit; font-weight: 600; color: var(--text-main); padding: 8px 12px; border-radius: var(--radius-md); cursor: pointer; font-size: 0.95rem; }
+        .nav-links button.active, .nav-links button:hover { background: var(--primary-light); color: var(--primary-hover); }
+
+        .btn { display: inline-flex; align-items: center; justify-content: center; gap: 8px; padding: 10px 20px; font-size: 0.95rem; font-weight: 700; border-radius: var(--radius-md); border: none; cursor: pointer; transition: all 0.25s ease; }
+        .btn-primary { background: linear-gradient(135deg, var(--primary) 0%, var(--primary-hover) 100%); color: #fff; box-shadow: 0 4px 14px rgba(99, 102, 241, 0.35); }
+        .btn-primary:hover { transform: translateY(-2px); color: #fff; }
+        .btn-danger { background: linear-gradient(135deg, #ef4444 0%, #dc2626 100%); color: #fff; box-shadow: 0 4px 14px rgba(239, 68, 68, 0.35); }
+        .btn-danger:hover { transform: translateY(-2px); color: #fff; }
+        .btn-secondary { background: #ffffff; color: var(--text-main); border: 1px solid var(--border-color); }
+        
+        .badge { padding: 4px 10px; border-radius: 50px; font-size: 0.78rem; font-weight: 700; display: inline-block; }
+        .badge-anon { background: #f1f5f9; color: #475569; border: 1px solid #cbd5e1; }
+        .badge-emergency { background: var(--rose-light); color: var(--rose); }
+        .badge-success { background: var(--emerald-light); color: #047857; }
+
+        .container { max-width: 1240px; margin: 0 auto; padding: 32px 20px; width: 100%; flex: 1; }
+        .hero-section { background: linear-gradient(135deg, #4f46e5 0%, #3730a3 100%); color: #fff; border-radius: 24px; padding: 60px 40px; margin-bottom: 40px; position: relative; overflow: hidden; }
+        .hero-title { font-size: 2.5rem; font-weight: 800; line-height: 1.2; margin-bottom: 16px; }
+        .hero-subtitle { font-size: 1.1rem; opacity: 0.9; margin-bottom: 28px; }
+
+        .grid-3 { display: grid; grid-template-columns: repeat(auto-fit, minmax(300px, 1fr)); gap: 24px; }
+        .card { background: var(--card-bg); border-radius: var(--radius-lg); border: 1px solid var(--border-color); padding: 24px; transition: all 0.3s ease; box-shadow: 0 1px 3px rgba(0,0,0,0.05); }
+        .card:hover { transform: translateY(-4px); box-shadow: 0 10px 25px -5px rgba(99, 102, 241, 0.1); }
+        .card-title { font-size: 1.2rem; font-weight: 700; margin-bottom: 10px; color: var(--text-main); }
+        .card-summary { color: var(--text-muted); font-size: 0.92rem; margin-bottom: 16px; }
+
+        .ai-chat-fab { position: fixed; bottom: 30px; right: 30px; width: 60px; height: 60px; border-radius: 50%; background: linear-gradient(135deg, #0ea5e9 0%, #6366f1 100%); color: #fff; display: flex; align-items: center; justify-content: center; font-size: 1.6rem; cursor: pointer; box-shadow: 0 10px 25px rgba(14, 165, 233, 0.4); z-index: 999; }
+        .ai-chat-drawer { position: fixed; bottom: 100px; right: 30px; width: 400px; max-width: calc(100vw - 40px); height: 520px; background: #fff; border-radius: 20px; box-shadow: 0 20px 40px rgba(0,0,0,0.15); display: flex; flex-direction: column; z-index: 1000; overflow: hidden; border: 1px solid var(--border-color); display: none; }
+        .ai-chat-drawer.active { display: flex; }
+        .chat-header { background: linear-gradient(135deg, #4f46e5 0%, #0ea5e9 100%); color: #fff; padding: 16px 20px; display: flex; justify-content: space-between; align-items: center; }
+        .chat-messages { flex: 1; padding: 16px; overflow-y: auto; display: flex; flex-direction: column; gap: 12px; background: #f8fafc; }
+        .msg-bubble { max-width: 85%; padding: 12px 16px; border-radius: 16px; font-size: 0.9rem; line-height: 1.5; }
+        .msg-ai { background: #fff; color: var(--text-main); align-self: flex-start; border: 1px solid var(--border-color); }
+        .msg-user { background: var(--primary); color: #fff; align-self: flex-end; }
+        .chat-input-area { padding: 12px; border-top: 1px solid var(--border-color); display: flex; gap: 8px; background: #fff; }
+        .chat-input-area input { flex: 1; padding: 10px 14px; border: 1px solid var(--border-color); border-radius: 50px; outline: none; }
+
+        .modal-overlay { position: fixed; inset: 0; background: rgba(15, 23, 42, 0.6); backdrop-filter: blur(4px); display: flex; align-items: center; justify-content: center; z-index: 2000; display: none; }
+        .modal-overlay.active { display: flex; }
+        .modal-card { background: #fff; width: 480px; max-width: 90%; border-radius: 20px; padding: 32px; box-shadow: 0 20px 30px -10px rgba(99, 102, 241, 0.2); }
+        .auth-tabs { display: flex; border-bottom: 2px solid var(--border-color); margin-bottom: 24px; }
+        .tab-btn { flex: 1; padding: 12px; background: none; border: none; font-weight: 700; color: var(--text-muted); cursor: pointer; }
+        .tab-btn.active { color: var(--primary); border-bottom: 2px solid var(--primary); }
+        .form-group { margin-bottom: 16px; }
+        .form-group label { display: block; font-weight: 600; font-size: 0.88rem; margin-bottom: 6px; }
+        .form-control { width: 100%; padding: 10px 14px; border: 1px solid var(--border-color); border-radius: var(--radius-md); font-family: inherit; font-size: 0.95rem; }
+
+        .main-footer { background: var(--dark-bg); color: #94a3b8; padding: 40px 20px 20px; margin-top: auto; font-size: 0.9rem; }
+    </style>
+</head>
+<body>
+    <!-- EMERGENCY HOTLINE TOP BAR -->
+    <div class="emergency-top-bar">
+        <div style="display: flex; align-items: center; gap: 8px;">
+            <div class="pulse-dot"></div>
+            <span>TỔNG ĐÀI KHẨN CẤP HOẠT ĐỘNG 24/7 (MIỄN PHÍ CUỘC GỌI)</span>
+        </div>
+        <div style="display: flex; gap: 10px;">
+            <a href="tel:111" class="hotline-badge"><i class="bi bi-shield-fill-check"></i> 111 (Bảo Vệ Trẻ Em)</a>
+            <a href="tel:113" class="hotline-badge"><i class="bi bi-telephone-fill"></i> 113 (Cảnh Sát)</a>
+            <a href="tel:115" class="hotline-badge"><i class="bi bi-hospital"></i> 115 (Cấp Cứu)</a>
+        </div>
+    </div>
+
+    <!-- NAVBAR -->
+    <header class="main-header">
+        <div class="navbar-container">
+            <a href="#" onclick="showPage('home')" class="brand-logo">
+                <i class="bi bi-shield-heart-fill"></i> SafeSchool
+            </a>
+            <ul class="nav-links">
+                <li><button onclick="showPage('home')" id="nav-home" class="active">Trang Chủ</button></li>
+                <li><button onclick="showPage('news')" id="nav-news">Tin Tức & Kỹ Năng</button></li>
+                <li><button onclick="showPage('forum')" id="nav-forum">Diễn Đàn</button></li>
+                <li><button onclick="showPage('report')" id="nav-report">Báo Cáo Ẩn Danh</button></li>
+                <li><button onclick="showPage('track')" id="nav-track">Tra Cứu Mã</button></li>
+            </ul>
+            <div style="display: flex; gap: 10px; align-items: center;">
+                <button class="btn btn-secondary" onclick="toggleAuthModal(true)"><i class="bi bi-box-arrow-in-right"></i> Đăng Nhập</button>
+                <button class="btn btn-danger" onclick="showPage('report')"><i class="bi bi-exclamation-triangle-fill"></i> Gửi Báo Cáo</button>
+            </div>
+        </div>
+    </header>
+
+    <main class="container" id="mainAppContent">
+        <!-- PAGES DYNAMICALLY RENDERED HERE -->
+    </main>
+
+    <!-- FLOATING AI SUPPORT CHAT -->
+    <div class="ai-chat-fab" onclick="toggleAiDrawer()"><i class="bi bi-robot"></i></div>
+    <div class="ai-chat-drawer" id="aiDrawer">
+        <div class="chat-header">
+            <div style="display: flex; align-items: center; gap: 8px;">
+                <i class="bi bi-robot" style="font-size: 1.4rem;"></i>
+                <div>
+                    <strong>AI Support SafeSchool</strong>
+                    <div style="font-size: 0.75rem; opacity: 0.85;">Tư vấn tâm lý & Khẩn cấp 24/7</div>
+                </div>
+            </div>
+            <button onclick="toggleAiDrawer()" style="background: none; border: none; color: #fff; font-size: 1.4rem; cursor: pointer;">&times;</button>
+        </div>
+        <div class="chat-messages" id="chatMsgs">
+            <div class="msg-bubble msg-ai">
+                👋 Chào em! Tôi là **AI Support SafeSchool**.<br>Nếu em bị đe dọa, đánh đập hoặc cô lập, hãy nhắn cho tôi. Thông tin hoàn toàn ẩn danh và bảo mật! 🛡️
+            </div>
+        </div>
+        <div class="chat-input-area">
+            <input type="text" id="chatInput" placeholder="Nhập câu hỏi tại đây..." onkeypress="if(event.key==='Enter') sendAiMessage()" />
+            <button class="btn btn-primary" onclick="sendAiMessage()"><i class="bi bi-send-fill"></i></button>
+        </div>
+    </div>
+
+    <!-- AUTH MODAL -->
+    <div class="modal-overlay" id="authModal">
+        <div class="modal-card">
+            <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 20px;">
+                <h3 style="font-size: 1.3rem; font-weight: 800;">Đăng Nhập SafeSchool</h3>
+                <button onclick="toggleAuthModal(false)" style="background: none; border: none; font-size: 1.5rem; cursor: pointer;">&times;</button>
+            </div>
+            <div class="auth-tabs">
+                <button class="tab-btn active" id="t-phone" onclick="switchTab('phone')">Số điện thoại</button>
+                <button class="tab-btn" id="t-user" onclick="switchTab('user')">Username</button>
+                <button class="tab-btn" id="t-gmail" onclick="switchTab('gmail')">Gmail</button>
+            </div>
+            <div id="c-phone">
+                <div class="form-group"><label>Số điện thoại</label><input type="tel" class="form-control" placeholder="0987654321" /></div>
+                <div class="form-group"><label>Mật khẩu</label><input type="password" class="form-control" placeholder="••••••••" /></div>
+                <button class="btn btn-primary" style="width: 100%; margin-top: 8px;" onclick="simLogin('Số điện thoại')"><i class="bi bi-phone"></i> Đăng nhập SĐT</button>
+            </div>
+            <div id="c-user" style="display: none;">
+                <div class="form-group"><label>Tên đăng nhập</label><input type="text" class="form-control" placeholder="Username" /></div>
+                <div class="form-group"><label>Mật khẩu</label><input type="password" class="form-control" placeholder="••••••••" /></div>
+                <button class="btn btn-primary" style="width: 100%; margin-top: 8px;" onclick="simLogin('Tài khoản')"><i class="bi bi-person"></i> Đăng nhập Username</button>
+            </div>
+            <div id="c-gmail" style="display: none; text-align: center;">
+                <p style="color: var(--text-muted); font-size: 0.9rem; margin-bottom: 20px;">Đăng nhập nhanh an toàn bằng tài khoản Google / Gmail cá nhân.</p>
+                <button class="btn btn-secondary" style="width: 100%; padding: 12px;" onclick="simLogin('Google/Gmail')"><i class="bi bi-google"></i> Tiếp tục với Google / Gmail</button>
+            </div>
+        </div>
+    </div>
+
+    <!-- FOOTER -->
+    <footer class="main-footer">
+        <div style="max-width: 1240px; margin: 0 auto; text-align: center;">
+            <p>&copy; 2026 SafeSchool Vietnam - Nền Tảng Hỗ Trợ & Bảo Vệ Học Sinh Bị Bắt Nạt Học Đường (C# ASP.NET Core MVC Project).</p>
+        </div>
+    </footer>
+
+    <script>
+        const store = {
+            reports: [
+                { trackingCode: 'SS-89A12B', school: 'THPT Nguyễn Trãi', type: 'Bắt nạt mạng & Lăng mạ', desc: 'Có nhóm lập group chế giễu sau giờ học', status: 'Đã tiếp nhận & Đang xác minh', notes: 'Ban Giám Hiệu đã làm việc với GVCN lớp.' }
+            ],
+            posts: [
+                { id: 1, title: 'Làm sao vượt qua cảm giác sợ hãi khi bị cô lập?', category: 'Tâm sự học đường', author: 'Học sinh ẩn danh', isAnon: true, likes: 24, content: 'Mình bị nhóm bạn trong lớp ghép tội xấu rồi xúi cả lớp không chơi cùng. Mỗi ngày đến trường rất áp lực...' },
+                { id: 2, title: 'Quy định xử lý hành vi đe dọa đánh bạn học?', category: 'Hỏi đáp pháp lý', author: 'Trần Đức Anh', isAnon: false, likes: 42, content: 'Theo Luật Trẻ em 2016, học sinh cấp 3 có hành vi bạo lực tống tiền sẽ bị xử lý thế nào?' }
+            ]
+        };
+
+        function showPage(pageId) {
+            document.querySelectorAll('.nav-links button').forEach(b => b.classList.remove('active'));
+            const activeBtn = document.getElementById('nav-' + pageId);
+            if (activeBtn) activeBtn.classList.add('active');
+
+            const content = document.getElementById('mainAppContent');
+            if (pageId === 'home') {
+                content.innerHTML = `
+                    <section class="hero-section">
+                        <span class="badge badge-success" style="margin-bottom: 12px;"><i class="bi bi-shield-check"></i> Bảo Mật Danh Tính 100% • Tư Vấn 24/7</span>
+                        <h1 class="hero-title">Bạn Không Độc Hành. Hãy Để SafeSchool Bảo Vệ Bạn!</h1>
+                        <p class="hero-subtitle">Hệ thống báo cáo ẩn danh bắt nạt học đường đầu tiên. Kết nối Tổng đài 111, Cảnh sát 113 và AI Support Trợ lý Khẩn cấp.</p>
+                        <div style="display: flex; gap: 12px; flex-wrap: wrap;">
+                            <button class="btn btn-danger" onclick="showPage('report')"><i class="bi bi-shield-lock-fill"></i> Báo Cáo Ẩn Danh Ngay</button>
+                            <a href="tel:111" class="btn btn-secondary" style="background: rgba(255,255,255,0.2); color:#fff;"><i class="bi bi-telephone-fill"></i> Gọi 111 Khẩn Cấp</a>
+                        </div>
+                    </section>
+
+                    <section style="margin-bottom: 40px; background: #fef2f2; border: 2px solid #fca5a5; border-radius: 20px; padding: 24px; display: flex; justify-content: space-between; align-items: center; flex-wrap: wrap; gap: 16px;">
+                        <div>
+                            <h3 style="color: #991b1b; font-size: 1.2rem; margin-bottom: 4px;">Đang gặp nguy hiểm thể xác hoặc tống tiền?</h3>
+                            <p style="color: #7f1d1d; font-size: 0.95rem;">Gọi trực tiếp cho Cảnh sát & Tổng đài Khẩn cấp để được giải cứu tức thì.</p>
+                        </div>
+                        <div style="display: flex; gap: 10px;">
+                            <a href="tel:111" class="btn btn-danger"><i class="bi bi-telephone-outbound-fill"></i> Gọi 111</a>
+                            <a href="tel:113" class="btn btn-secondary" style="color: #dc2626; border-color: #ef4444;"><i class="bi bi-shield-shaded"></i> Gọi 113</a>
+                        </div>
+                    </section>
+
+                    <h2 style="font-size: 1.6rem; font-weight: 800; margin-bottom: 20px;">Cẩm Nang Kỹ Năng Tự Vệ Học Đường</h2>
+                    <div class="grid-3">
+                        <div class="card">
+                            <span class="badge badge-success" style="margin-bottom: 8px;">Kỹ năng phòng vệ</span>
+                            <h3 class="card-title">5 Kỹ năng tự vệ an toàn khi đối mặt với bạo lực học đường</h3>
+                            <p class="card-summary">Các bước giữ bình tĩnh, di chuyển về nơi đông người và gọi ngay hotline 111 khi bị đe dọa.</p>
+                        </div>
+                        <div class="card">
+                            <span class="badge badge-success" style="margin-bottom: 8px;">Tư vấn tâm lý</span>
+                            <h3 class="card-title">Nhận diện Cyberbullying và cách chặn đứng tức thì</h3>
+                            <p class="card-summary">Xử lý khi bị lập group antifan, bôi nhọ ảnh cá nhân hoặc nhắn tin đe dọa trên MXH.</p>
+                        </div>
+                        <div class="card">
+                            <span class="badge badge-success" style="margin-bottom: 8px;">Pháp lý học đường</span>
+                            <h3 class="card-title">Luật Trẻ em 2016 và Quyền được bảo vệ của Học sinh</h3>
+                            <p class="card-summary">Quy định pháp luật quan trọng về quyền được bảo vệ an toàn của học sinh trong nhà trường.</p>
+                        </div>
+                    </div>
+                `;
+            } else if (pageId === 'news') {
+                content.innerHTML = `
+                    <h1 style="font-size: 2.2rem; font-weight: 800; margin-bottom: 20px;">Tin Tức & Kỹ Năng Bảo Vệ Học Đường</h1>
+                    <div class="grid-3">
+                        <div class="card">
+                            <span class="badge badge-success" style="margin-bottom: 8px;">Kỹ năng phòng vệ</span>
+                            <h3 class="card-title">5 Kỹ năng tự vệ an toàn khi đối mặt với bạo lực</h3>
+                            <p class="card-summary">Giữ khoảng cách, hô to thoát hiểm và gửi báo cáo ẩn danh ngay trên SafeSchool.</p>
+                        </div>
+                        <div class="card">
+                            <span class="badge badge-success" style="margin-bottom: 8px;">Tư vấn tâm lý</span>
+                            <h3 class="card-title">Ứng phó bắt nạt trên không gian mạng (Cyberbullying)</h3>
+                            <p class="card-summary">Chụp màn hình làm chứng cứ, chặn tài khoản quấy rối và báo cáo Ban tư vấn nhà trường.</p>
+                        </div>
+                        <div class="card">
+                            <span class="badge badge-success" style="margin-bottom: 8px;">Pháp lý</span>
+                            <h3 class="card-title">Trách nhiệm pháp lý hành vi bạo lực học đường</h3>
+                            <p class="card-summary">Quy định kỷ luật đình chỉ học và xử lý hình sự đối với hành vi hành hung tống tiền.</p>
+                        </div>
+                    </div>
+                `;
+            } else if (pageId === 'forum') {
+                const postsHtml = store.posts.map(p => `
+                    <div class="card" style="margin-bottom: 16px;">
+                        <div style="display: flex; justify-content: space-between; margin-bottom: 8px;">
+                            <span class="badge ${p.isAnon ? 'badge-anon' : 'badge-success'}">${p.author}</span>
+                            <span class="badge badge-emergency">${p.category}</span>
+                        </div>
+                        <h3 style="font-size: 1.2rem; margin-bottom: 8px;">${p.title}</h3>
+                        <p style="color: var(--text-muted); margin-bottom: 16px;">${p.content}</p>
+                        <button class="btn btn-secondary" onclick="this.querySelector('.c').textContent=parseInt(this.querySelector('.c').textContent)+1">
+                            <i class="bi bi-heart-fill" style="color:#ef4444;"></i> <span class="c">${p.likes}</span> Thích
+                        </button>
+                    </div>
+                `).join('');
+                content.innerHTML = `
+                    <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 24px;">
+                        <h1 style="font-size: 2.2rem; font-weight: 800;"><i class="bi bi-chat-heart-fill" style="color: var(--primary);"></i> Diễn Đàn Tâm Sự Học Đường</h1>
+                        <button class="btn btn-primary" onclick="alert('Vui lòng điền form đăng bài ẩn danh!')"><i class="bi bi-pencil-square"></i> Đăng Bài Tâm Sự</button>
+                    </div>
+                    <div>${postsHtml}</div>
+                `;
+            } else if (pageId === 'report') {
+                content.innerHTML = `
+                    <div style="max-width: 760px; margin: 0 auto;">
+                        <div style="text-align: center; margin-bottom: 24px;">
+                            <span class="badge badge-emergency" style="padding: 6px 16px; margin-bottom: 8px;"><i class="bi bi-shield-lock-fill"></i> Bảo Mật 100% • Không Thu Thập IP</span>
+                            <h1 style="font-size: 2rem; font-weight: 800;">Gửi Đơn Báo Cáo Bắt Nạt Học Đường</h1>
+                        </div>
+                        <div class="card" style="padding: 32px;">
+                            <form onsubmit="submitReport(event)">
+                                <div style="background: #e0e7ff; padding: 16px; border-radius: 12px; margin-bottom: 20px; display: flex; justify-content: space-between; align-items: center;">
+                                    <div><strong><i class="bi bi-incognito"></i> Chế độ Báo Cáo Ẩn Danh</strong><div style="font-size: 0.85rem; color: var(--text-muted);">Che giấu hoàn toàn danh tính cá nhân.</div></div>
+                                    <input type="checkbox" checked style="width: 20px; height: 20px;">
+                                </div>
+                                <div class="form-group"><label>Tên trường học (*)</label><input type="text" id="rSchool" class="form-control" placeholder="Ví dụ: THPT Nguyễn Trãi" required></div>
+                                <div class="form-group"><label>Loại hình bắt nạt (*)</label>
+                                    <select id="rType" class="form-control"><option>Bạo lực thể xác / Đánh đập</option><option>Lăng mạ / Cô lập tâm lý</option><option>Bắt nạt mạng (Cyberbullying)</option><option>Tống tiền / Trấn lột</option></select>
+                                </div>
+                                <div class="form-group"><label>Mô tả chi tiết sự việc (*)</label><textarea id="rDesc" rows="4" class="form-control" placeholder="Mô tả sự việc xảy ra..." required></textarea></div>
+                                <button type="submit" class="btn btn-danger" style="width: 100%; padding: 14px; font-size: 1.05rem;"><i class="bi bi-send-check-fill"></i> GỬI ĐƠN BÁO CÁO ẨN DANH NGAY</button>
+                            </form>
+                        </div>
+                    </div>
+                `;
+            } else if (pageId === 'track') {
+                content.innerHTML = `
+                    <div style="max-width: 760px; margin: 0 auto;">
+                        <h1 style="font-size: 2rem; font-weight: 800; text-align: center; margin-bottom: 20px;"><i class="bi bi-shield-check" style="color: var(--primary);"></i> Tra Cứu Tiến Độ Báo Cáo</h1>
+                        <div class="card" style="padding: 24px; margin-bottom: 24px;">
+                            <div style="display: flex; gap: 10px;">
+                                <input type="text" id="trackInput" class="form-control" placeholder="Nhập Mã Tra Cứu (VD: SS-89A12B)..." value="SS-89A12B">
+                                <button class="btn btn-primary" onclick="doTrack()"><i class="bi bi-search"></i> Tra Cứu</button>
+                            </div>
+                        </div>
+                        <div id="trackResult"></div>
+                    </div>
+                `;
+                doTrack();
+            }
+        }
+
+        function submitReport(e) {
+            e.preventDefault();
+            const code = 'SS-' + Math.random().toString(36).substr(2, 6).toUpperCase();
+            const school = document.getElementById('rSchool').value;
+            const type = document.getElementById('rType').value;
+            const desc = document.getElementById('rDesc').value;
+
+            store.reports.unshift({ trackingCode: code, school, type, desc, status: 'Đã tiếp nhận & Đang xác minh', notes: 'Ban tư vấn SafeSchool đang phối hợp xử lý khẩn cấp.' });
+
+            document.getElementById('mainAppContent').innerHTML = `
+                <div style="max-width: 600px; margin: 40px auto; text-align: center;">
+                    <div class="card" style="padding: 40px; border-top: 6px solid var(--emerald);">
+                        <i class="bi bi-check-circle-fill" style="font-size: 3rem; color: var(--emerald);"></i>
+                        <h2 style="font-size: 1.8rem; margin: 16px 0 8px;">Gửi Báo Cáo Thành Công!</h2>
+                        <div style="background: #f8fafc; padding: 20px; border-radius: 12px; border: 2px dashed var(--primary); margin: 20px 0;">
+                            <div>MÃ TRA CỨU BẢO MẬT BÍ MẬT CỦA BẠN:</div>
+                            <div style="font-size: 2rem; font-weight: 800; color: var(--primary-hover);">${code}</div>
+                            <small style="color: var(--rose);">⚠️ Hãy lưu Mã này để tra cứu tiến độ xử lý mà KHÔNG LỘ danh tính!</small>
+                        </div>
+                        <button class="btn btn-primary" onclick="showPage('track')"><i class="bi bi-search"></i> Tra Cứu Ngay</button>
+                    </div>
+                </div>
+            `;
+        }
+
+        function doTrack() {
+            const input = document.getElementById('trackInput');
+            if (!input) return;
+            const code = input.value.trim().toUpperCase();
+            const r = store.reports.find(item => item.trackingCode.toUpperCase() === code);
+            const resDiv = document.getElementById('trackResult');
+
+            if (r) {
+                resDiv.innerHTML = `
+                    <div class="card" style="padding: 28px; border-top: 4px solid var(--emerald);">
+                        <div style="display: flex; justify-content: space-between; margin-bottom: 16px;">
+                            <div>MÃ TRA CỨU: <strong style="font-size: 1.2rem; color: var(--primary);">${r.trackingCode}</strong></div>
+                            <span class="badge badge-success">${r.status}</span>
+                        </div>
+                        <p><strong>Trường học:</strong> ${r.school}</p>
+                        <p><strong>Loại hình bắt nạt:</strong> ${r.type}</p>
+                        <p style="background: #f8fafc; padding: 12px; border-radius: 8px; margin-top: 10px;"><strong>Mô tả:</strong> ${r.desc}</p>
+                        <div style="background: var(--emerald-light); color: #047857; padding: 16px; border-radius: 8px; margin-top: 16px;">
+                            <strong>Thông báo từ Ban Giám Hiệu:</strong><div>${r.notes}</div>
+                        </div>
+                    </div>
+                `;
+            } else {
+                resDiv.innerHTML = `<div class="card" style="text-align: center; padding: 32px; color: var(--rose);">Không tìm thấy đơn báo cáo nào với mã "${code}".</div>`;
+            }
+        }
+
+        function toggleAiDrawer() { document.getElementById('aiDrawer').classList.toggle('active'); }
+
+        function sendAiMessage() {
+            const input = document.getElementById('chatInput');
+            const msgs = document.getElementById('chatMsgs');
+            const text = input.value.trim();
+            if (!text) return;
+
+            msgs.innerHTML += `<div class="msg-bubble msg-user">${text}</div>`;
+            input.value = '';
+
+            let reply = "👋 Chào em! Tôi là AI Support SafeSchool.\nTôi có thể giúp em hướng dẫn cấp cứu khi gặp nguy hiểm, gửi Báo cáo Ẩn danh hoặc tư vấn tâm lý.";
+            const lower = text.toLowerCase();
+            if (lower.includes('đánh') || lower.includes('bạo lực') || lower.includes('đe dọa') || lower.includes('tống tiền')) {
+                reply = "🛡️ **CẢNH BÁO NGUY HIỂM KHẨN CẤP!**\n1. Di chuyển ngay về phía văn phòng thầy cô, phòng bảo vệ.\n2. Gọi ngay hotline **111** (Bảo vệ Trẻ em 24/7) hoặc **113** (Cảnh sát).\n3. Bấm 'Gửi Báo Cáo Ẩn Danh' trên SafeSchool để Ban Giám Hiệu can thiệp xử lý!";
+            } else if (lower.includes('cô lập') || lower.includes('buồn') || lower.includes('sợ')) {
+                reply = "🤝 **SafeSchool luôn ở bên em!**\nCảm giác bị cô lập rất đau đớn, nhưng em không hề làm gì sai cả. Em có thể viết bài chia sẻ ẩn danh trên Diễn Đàn SafeSchool để nhận lời khuyên!";
+            }
+
+            setTimeout(() => {
+                msgs.innerHTML += `<div class="msg-bubble msg-ai">${reply.replace(/\n/g, '<br>')}</div>`;
+                msgs.scrollTop = msgs.scrollHeight;
+            }, 500);
+        }
+
+        function toggleAuthModal(show) { document.getElementById('authModal').classList.toggle('active', show); }
+        function switchTab(t) {
+            ['phone', 'user', 'gmail'].forEach(x => {
+                document.getElementById('c-' + x).style.display = (x === t) ? 'block' : 'none';
+                document.getElementById('t-' + x).classList.toggle('active', x === t);
+            });
+        }
+        function simLogin(method) { alert('Đăng nhập thành công bằng ' + method + '!'); toggleAuthModal(false); }
+
+        // Initialize Home Page
+        showPage('home');
+    </script>
+</body>
+</html>
